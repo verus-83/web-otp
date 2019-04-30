@@ -51,7 +51,7 @@ This would provide a declarative API for developers: annotate form fields with â
 
 iOS already uses this model ([documentation](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_an_html_input_element) - some analysis)
 
-### SMS Retrieval API
+### SMS Receiver API
 
 In addition, browsers could provide an imperative API to request the contents of an incoming SMS. Here is one possible formulation / shape, based on Androidâ€™s [SMS Retriever API](https://developers.google.com/identity/sms-retriever/overview): 
 
