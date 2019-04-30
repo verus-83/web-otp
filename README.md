@@ -20,6 +20,7 @@ There are a variety of ways to verify control over phone numbers, but a randomly
 Make the most common existing phone number verification flow (SMS OTP) match ease of use in native apps.
 
 ## Non-Goals
+
 This proposal does not attempt to move developers off of existing phone number use cases and verification mechanisms, nor does it cover obtaining the phone number itself.
 
 ## Scenarios
