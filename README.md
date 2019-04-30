@@ -1,4 +1,4 @@
-# SMS OTP Retrieval
+# SMS Receiver API
 
 ## Introduction
 
