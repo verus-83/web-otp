@@ -57,8 +57,8 @@ In addition, browsers could provide an imperative API to request the contents of
 
 ```
   // This is just a draft/example of what a API could look like.
-  let retriever = new SmsRetriever({timeout: 60});
-  let sms = await retriever.receive();
+  let receiver = new SMSReceiver({timeout: 60});
+  let sms = await receiver.receive();
   extract_otp_and_verify(sms.content);
 ```
 
