@@ -26,9 +26,11 @@ This proposal does not attempt to move developers off of existing phone number u
 ## Scenarios
 
 ### 1. As an authentication signal
+
 Online banks use SMS OTP to convey a secret to the user for the purpose of multi-factor authentication (e.g. when signing in to new device), re-auth (at time of a transaction), or account recovery (in the event user were to lose access to other multifactor options).
 
 ### 2. To establish reachability
+
 Ride-sharing services often ask user to provide a phone number, and before taking a first ride, check that the user actually owns and is reachable at this number by sending and confirming a one-time code. 
 
 ## Proposals
@@ -40,6 +42,7 @@ In this formulation, the browser will help the site obtain the contents of the S
 The following is an early exploration / early baseline of what these APIs could look like. We expect them to change drastically as we learn more about the space.
 
 ### Autofill Annotations
+
 This would provide a declarative API for developers: annotate form fields with “one-time-code” to signal to browser where to autofill an SMS OTP. The SMS would have to be structured in such a way that the SMS can be identified and the OTP could be parsed and filled.
 
 ```
@@ -49,6 +52,7 @@ This would provide a declarative API for developers: annotate form fields with �
 iOS already uses this model ([documentation](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_an_html_input_element) - some analysis)
 
 ### SMS Retrieval API
+
 In addition, browsers could provide an imperative API to request the contents of an incoming SMS. Here is one possible formulation / shape, based on Android’s [SMS Retriever API](https://developers.google.com/identity/sms-retriever/overview): 
 
 ```
@@ -65,7 +69,7 @@ In order to use native SMS retrieval mechanism, the SMS message contents must be
   FA+9qCX9VSu
 ```
 
-Where “FA+9qCX9VSu” is a hashcode derived from the native app package and cert fingerprint.
+Where `FA+9qCX9VSu` is a hashcode derived from the native app package and cert fingerprint.
 
 In one possible formulation, to make SMS available to a browser, the SMS would have to be targeted at the current browser (e.g. use the browser app hash at the end of the SMS), and developer would also have to specify an intended origin. For example:
 
@@ -108,6 +112,7 @@ Note that iOS provides heuristic-based OTP autofill, but iOS provides browser / 
 ### Phone Number Assertion API
 
 If phone number has already been verified for a given device or user account, browser could return a verifiable assertion of the phone number. 
+
 ```
   // This is just a draft/example of what a API could look like.
   let phone = await navigator.credentials.get({phone: true});
