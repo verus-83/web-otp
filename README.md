@@ -166,9 +166,11 @@ We aren’t telling developers to use phone number; they are already using them.
 SMS is the most common existing verification mechanism; this proposal aims to streamline flows that already exist by mitigating the need for user involvement/action. Although this does not address the more fundamental problems, it may make some situations better (e.g. users don’t handle OTP manually, hence less conditioned to be phished), but starting to move developers to a programmatic model would be a potential stepping stone to better mechanisms.
 
 ### Is this implementable on iOS?
+
 Yes, iOS already uses a declarative model (form annotation “[one-time-code](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_an_html_input_element)”) and heuristically extracts and suggests OTP from SMS. They could implement an imperative API or support other alternatives like facilitating interaction with identity providers if desired.
 
 ### Is this implementable on desktop?
+
 Yes, browser need not look for SMS on the local device. For example, if Chromesync is enabled across desktop and mobile devices, Chrome could retrieve on one device and return the SMS content on another. Or locally, a desktop instance of a browser could use Bluetooth to talk to a nearby phone and have an instance of the browser on the mobile device retrieve and return the SMS.
 
 ### Why can’t we use a model like having developer tell us the OTP and let them know if there is a match?
