@@ -56,24 +56,25 @@ iOS already uses this model ([documentation](https://developer.apple.com/documen
 In addition, browsers could provide an imperative API to request the contents of an incoming SMS. Here is one possible formulation / shape, based on Android’s [SMS Retriever API](https://developers.google.com/identity/sms-retriever/overview): 
 
 ```javascript
-  let {content} = await navigator.sms.receive();
+let {content} = await navigator.sms.receive();
 ```
 
 You can also control when to abort it (e.g. a custom timeout, the user has entered the code manually, etc):
 
 ```javascript
-  // This is just a draft/example of what a API could look like.
-  let controller = new AbortController();
-  let {signal} = controller;
-  setTimeout(() => {
-    // abort after two minutes
-    controller.abort();
-  }, 2 * 60 * 1000);
-  try {
-    let {content} = await navigator.sms.receive(signal);
-  } catch (e) {
-    // deal with errors
-  }
+// This is just a draft/example of what a API could look like.
+let controller = new AbortController();
+let {signal} = controller;
+setTimeout(() => {
+  // abort after two minutes
+  controller.abort();
+}, 2 * 60 * 1000);
+  
+try {
+  let {content} = await navigator.sms.receive(signal);
+} catch (e) {
+  // deal with errors
+}
 
 ```
 
