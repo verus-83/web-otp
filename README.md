@@ -70,7 +70,7 @@ setTimeout(() => {
 }, 2 * 60 * 1000);
   
 try {
-  let {content} = await navigator.sms.receive(signal);
+  let {content} = await navigator.sms.receive({signal: signal});
 } catch (e) {
   // deal with errors
 }
