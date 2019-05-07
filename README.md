@@ -62,7 +62,6 @@ let {content} = await navigator.sms.receive();
 You can also control when to abort it (e.g. a custom timeout, the user has entered the code manually, etc):
 
 ```javascript
-// This is just a draft/example of what a API could look like.
 let controller = new AbortController();
 let {signal} = controller;
 setTimeout(() => {
