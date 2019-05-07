@@ -62,15 +62,14 @@ let {content} = await navigator.sms.receive();
 You can also control when to abort it (e.g. a custom timeout, the user has entered the code manually, etc):
 
 ```javascript
-let controller = new AbortController();
-let {signal} = controller;
+let abort = new AbortController();
 setTimeout(() => {
   // abort after two minutes
-  controller.abort();
+  abort.abort();
 }, 2 * 60 * 1000);
   
 try {
-  let {content} = await navigator.sms.receive({signal: signal});
+  let {content} = await navigator.sms.receive(abort);
 } catch (e) {
   // deal with errors
 }
