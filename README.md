@@ -45,7 +45,7 @@ The following is an early exploration / early baseline of what these APIs could 
 
 This would provide a declarative API for developers: annotate form fields with “one-time-code” to signal to browser where to autofill an SMS OTP. The SMS would have to be structured in such a way that the SMS can be identified and the OTP could be parsed and filled.
 
-```
+```html
 <input id="single-factor-code-text-field" autocomplete="one-time-code"/>
 ```
 
@@ -74,7 +74,6 @@ try {
   // deal with errors
 }
 ```
-
 
 In order to use native SMS retrieval mechanism, the SMS message contents must be formatted appropriately, and the current format is oriented around native apps. For example:
 
@@ -108,9 +107,9 @@ Note that an advantage to an imperative API is that developer has more flexibili
 Provide a higher level API for obtaining OTP, which could be provided by a variety of transport mechanisms (email, time-based authenticator apps running on the device, not just SMS)
 
 ```
-  // This is just a draft/example of what a API could look like.
-  let otp = await navigator.credentials.get({otp: true});
-  verify(otp);
+// This is just a draft/example of what a API could look like.
+let otp = await navigator.credentials.get({otp: true});
+verify(otp);
 ```
 
 ## Alternatives Under Consideration
