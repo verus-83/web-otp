@@ -79,8 +79,8 @@ try {
 In order to use native SMS retrieval mechanism, the SMS message contents must be formatted appropriately, and the current format is oriented around native apps. For example:
 
 ```
-  <#> Your ExampleApp verification code is: 123ABC78
-  FA+9qCX9VSu
+<#> Your ExampleApp verification code is: 123ABC78
+FA+9qCX9VSu
 ```
 
 Where `FA+9qCX9VSu` is a hashcode derived from the native app package and cert fingerprint.
@@ -88,9 +88,9 @@ Where `FA+9qCX9VSu` is a hashcode derived from the native app package and cert f
 In one possible formulation, to make SMS available to a browser, the SMS would have to be targeted at the current browser (e.g. use the browser app hash at the end of the SMS), and developer would also have to specify an intended origin. For example:
 
 ```
-  <#> Your ExampleApp code is: 123ABC78
-  https://example.com
-  FA+9qCX9VSu
+<#> Your ExampleApp code is: 123ABC78
+https://example.com
+FA+9qCX9VSu
 ```
 
 For a single or small set of supporting browsers, developers may be able to hardcode or determine the appropriate targeting. This targeting mechanism for native apps may be made more flexible / ergonomic in the future.
