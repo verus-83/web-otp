@@ -127,9 +127,9 @@ Note that iOS provides heuristic-based OTP autofill, but iOS provides browser / 
 If phone number has already been verified for a given device or user account, browser could return a verifiable assertion of the phone number. 
 
 ```
-  // This is just a draft/example of what a API could look like.
-  let phone = await navigator.credentials.get({phone: true});
-  verify(phone);
+// This is just a draft/example of what a API could look like.
+let phone = await navigator.credentials.get({phone: true});
+verify(phone);
 ```
 
 This could be implemented by having developer interact with identity providers (IDPs), which have already verified and are aware of the user’s phone number, and could vouch for this information, in the same way Google Sign-In and similar federated identity flows currently work for email addresses. 
