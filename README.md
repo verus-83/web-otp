@@ -78,7 +78,7 @@ try {
 In order to use native SMS retrieval mechanism, the SMS message contents must be formatted appropriately, and the current format is oriented around native apps. For example:
 
 ```
-<#> Your ExampleApp verification code is: 123ABC78
+Your ExampleApp verification code is: 123ABC78
 FA+9qCX9VSu
 ```
 
@@ -87,8 +87,8 @@ Where `FA+9qCX9VSu` is a hashcode derived from the native app package and cert f
 In one possible formulation, to make SMS available to a browser, the SMS would have to be targeted at the current browser (e.g. use the browser app hash at the end of the SMS), and developer would also have to specify an intended origin. For example:
 
 ```
-<#> Your ExampleApp code is: 123ABC78
-https://example.com
+Your ExampleApp code is: 123ABC78
+<#> https://example.com
 FA+9qCX9VSu
 ```
 
@@ -96,7 +96,14 @@ For a single or small set of supporting browsers, developers may be able to hard
 
 The current native SMS Retriever API does not provide any UI using the retrieval process, but the native SMS notifications are still triggered, and the SMS messages will remain in the user’s message history.
 
-In another formulation, if the browser had access to SMS on the device, it could serve as an intermediary between the received SMS and the web apps, and provide a consent user interface before the SMS is shared.
+#### Formatting
+
+Android recently launched (TODO(goto): add link) an SMS format that skips the app hash, prompting the user for consent. In this formulation, the format of the SMS could contain the desired origin which the browser uses to mediate:
+
+```
+Your ExampleApp code is: 123ABC78
+<#> https://example.com
+```
 
 Once the browser has the SMS contents it can return the entire SMS message to the caller. The caller can then extract the OTP from the message (using whatever formatting they chose) and complete the phone number verification flow as if the user had typed the OTP (and if programmatic retrieval fails, user can always simply read the SMS and type OTP manually as currently done).
 
