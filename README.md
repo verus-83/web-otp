@@ -101,8 +101,15 @@ The current native SMS Retriever API does not provide any UI using the retrieval
 Android recently launched (TODO(goto): add link) an SMS format that skips the app hash, prompting the user for consent. In this formulation, the format of the SMS could contain the desired origin which the browser uses to mediate:
 
 ```
-Your ExampleApp code is: 123ABC78
-<#> https://example.com
+<#> Your ExampleApp code is: 123ABC78
+From: https://example.com
+```
+
+While GMS core releases are still rolling out, there is an interesting trick we could do to combine URLs with App Hashes, embedding them as URL parameters (making them valid android SMSes as well as valid web urls, which we can use to derive origins):
+
+```
+<#> Your ExampleApp code is: 123ABC78
+From: https://code.sgo.to?s3LhKBB0M33
 ```
 
 Once the browser has the SMS contents it can return the entire SMS message to the caller. The caller can then extract the OTP from the message (using whatever formatting they chose) and complete the phone number verification flow as if the user had typed the OTP (and if programmatic retrieval fails, user can always simply read the SMS and type OTP manually as currently done).
