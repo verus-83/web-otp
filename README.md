@@ -46,10 +46,10 @@ The following is an early exploration / early baseline of what these APIs could 
 This would provide a declarative API for developers: annotate form fields with “one-time-code” to signal to browser where to autofill an SMS OTP. The SMS would have to be structured in such a way that the SMS can be identified and the OTP could be parsed and filled.
 
 ```html
-<input id="single-factor-code-text-field" autocomplete="one-time-code"/>
+<input autocomplete="one-time-code"/>
 ```
 
-iOS already uses this model ([documentation](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_an_html_input_element) - some analysis)
+iOS already uses this model ([documentation](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_an_html_input_element) - some analysis).
 
 ### SMS Receiver API
 
@@ -101,15 +101,15 @@ The current native SMS Retriever API does not provide any UI using the retrieval
 Android recently launched (TODO(goto): add link) an SMS format that skips the app hash, prompting the user for consent. In this formulation, the format of the SMS could contain the desired origin which the browser uses to mediate:
 
 ```
-<#> Your ExampleApp code is: 123ABC78
-From: https://example.com
+Your ExampleApp code is: 123ABC78
+To: https://example.com
 ```
 
 While GMS core releases are still rolling out, there is an interesting trick we could do to combine URLs with App Hashes, embedding them as URL parameters (making them valid android SMSes as well as valid web urls, which we can use to derive origins):
 
 ```
-<#> Your ExampleApp code is: 123ABC78
-From: https://code.sgo.to?s3LhKBB0M33
+Your ExampleApp code is: 123ABC78
+To: https://code.sgo.to?s3LhKBB0M33
 ```
 
 Once the browser has the SMS contents it can return the entire SMS message to the caller. The caller can then extract the OTP from the message (using whatever formatting they chose) and complete the phone number verification flow as if the user had typed the OTP (and if programmatic retrieval fails, user can always simply read the SMS and type OTP manually as currently done).
@@ -205,3 +205,5 @@ Yes, browser need not look for SMS on the local device. For example, if Chromesy
 ### Why can’t we use a model like having developer tell us the OTP and let them know if there is a match?
 
 The developer needs something that can be verified on their server, a yes/no response is not sufficient. Claiming that the phone number is active on the device would require a response signed in some way to make it verifiable. This could be done in a number of ways, but is a major departure from the current OTP model and necessitate major changes from developers (i.e. change their backend server logic to process these claims; whereas just returning the SMS contents with the OTP means primarily only a frontend change an minimal backend work ... perhaps only changing the message template format, rather than security-sensitive backend logic). However, the longer-term intent with more comprehensive Identity APIs is to provide verifiable assertions of phone ownership, which would be compelling for developers to adopt and change their system to accept if it meant avoiding the need for sending SMS.
+
+
