@@ -15,23 +15,8 @@ The challenge is that usage of phone numbers for these purposes typically requir
 
 There are a variety of ways to verify control over phone numbers, but a randomly generated one-time passcode (OTP) sent by SMS to the number in question is the most common. Presenting this code back to developer’s server proves control of the phone number. In this proposal, we focus on the ability to programmatically obtain one-time codes from SMS as solution to ease the friction and failure points of manual user input of SMS codes, which is prone to error and phishing.
 
-## Goals
-
-Make the most common existing phone number verification flow (SMS OTP) match ease of use in native apps.
-
-## Non-Goals
-
-This proposal does not attempt to move developers off of existing phone number use cases and verification mechanisms, nor does it cover obtaining the phone number itself.
-
-## Scenarios
-
-### 1. As an authentication signal
-
-Online banks use SMS OTP to convey a secret to the user for the purpose of multi-factor authentication (e.g. when signing in to new device), re-auth (at time of a transaction), or account recovery (in the event user were to lose access to other multifactor options).
-
-### 2. To establish reachability
-
-Ride-sharing services often ask user to provide a phone number, and before taking a first ride, check that the user actually owns and is reachable at this number by sending and confirming a one-time code.
+  * goal: make the most [common existing](#scenarios) phone number verification flow (SMS OTP) match ease of use in native apps.
+  * non-goal: this proposal does not attempt to move developers off of existing phone number use cases and verification mechanisms, nor does it cover obtaining the phone number itself. Specifically, the developer must have previously obtained the phone number via existing mechanisms (e.g. user form input, autofill, etc.), which aren't addressed in this proposal.
 
 ## Prior Art
 
@@ -55,7 +40,6 @@ Secondly, Safari on iOS has a declarative [autocomplete](https://developer.apple
 
 ## Proposals
 
-The developer must obtain the phone number via their existing mechanisms (e.g. user form input, autofill, etc.) and send an SMS (e.g. via Twilio) with a one-time code to the number, which they must generate and track on their servers.
 
 In this formulation, the browser will help the site obtain the contents of the SMS or OTP programmatically.  
 
@@ -279,4 +263,15 @@ Yes, browser need not look for SMS on the local device. For example, if Chromesy
 
 The developer needs something that can be verified on their server, a yes/no response is not sufficient. Claiming that the phone number is active on the device would require a response signed in some way to make it verifiable. This could be done in a number of ways, but is a major departure from the current OTP model and necessitate major changes from developers (i.e. change their backend server logic to process these claims; whereas just returning the SMS contents with the OTP means primarily only a frontend change an minimal backend work ... perhaps only changing the message template format, rather than security-sensitive backend logic). However, the longer-term intent with more comprehensive Identity APIs is to provide verifiable assertions of phone ownership, which would be compelling for developers to adopt and change their system to accept if it meant avoiding the need for sending SMS.
 
+## Annex
+
+### Scenarios
+
+#### 1. As an authentication signal
+
+Online banks use SMS OTP to convey a secret to the user for the purpose of multi-factor authentication (e.g. when signing in to new device), re-auth (at time of a transaction), or account recovery (in the event user were to lose access to other multifactor options).
+
+#### 2. To establish reachability
+
+Ride-sharing services often ask user to provide a phone number, and before taking a first ride, check that the user actually owns and is reachable at this number by sending and confirming a one-time code.
 
