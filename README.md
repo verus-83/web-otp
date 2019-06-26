@@ -51,7 +51,7 @@ The following is an early exploration / baseline of what this API could look lik
 
 From a UX perspective, we want to get out of the way as much as possible from the web author, while still keeping users aware and in control of what's going on.
 
-![User flow](mock.gif){:width="250px"}
+<img src="mock.gif" width="250px">
 
 To support this user flow, we propose two complementary API components:
 
