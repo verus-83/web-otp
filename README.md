@@ -35,21 +35,23 @@ Ride-sharing services often ask user to provide a phone number, and before takin
 
 ## Prior Art
 
-There are a couple of comparable / related APIs that we should use as a reference.
+There are two comparable APIs that we should use as a reference.
 
 First, the native [Android API](https://developers.google.com/identity/sms-retriever/overview) is an **imperative** API that gives access to the **full** contents of the SMS message. Here is a code snippet:
 
 ```java
-
+// Starts SmsRetriever, which waits for ONE matching SMS message until timeout
+// (5 minutes). The matching SMS message will be sent via a Broadcast Intent with
+// action SmsRetriever#SMS_RETRIEVED_ACTION.
+SmsRetrieverClient client = SmsRetriever.getClient(this /* context */);
+Task<Void> task = client.startSmsRetriever();
 ```
 
-This would provide a declarative API for developers: annotate form fields with “one-time-code” to signal to browser where to autofill an SMS OTP. The SMS would have to be structured in such a way that the SMS can be identified and the OTP could be parsed and filled.
+Secondly, Safari on iOS has a declarative [autocomplete](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_an_html_input_element) API that provides an integration with the native keyboard. Here is a cod snippet:
 
 ```html
 <input autocomplete="one-time-code"/>
 ```
-
-iOS already uses this model ([documentation](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_an_html_input_element) - some analysis).
 
 ## Proposals
 
