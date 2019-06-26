@@ -51,7 +51,7 @@ The following is an early exploration / baseline of what this API could look lik
 
 From a UX perspective, we want to get out of the way as much as possible from the web author, while still keeping users aware and in control of what's going on.
 
-<img src="mock.gif" width="250px">
+<center><img src="mock.gif" width="250px"></center>
 
 To support this user flow, we propose two complementary API components:
 
@@ -84,7 +84,7 @@ Some corner cases are covered [here](#Spec).
 There are a couple of nice side effects of the imperative API:
 
 * first, it can derive the [declarative API](#Declarative-API) (but not otherwise)
-* second, it can offer a [spectrum of mediation](UX) / consent / permissions / interventions without any re-activation of the ecosystem
+* second, it can offer a [spectrum of mediation](#UX) / consent / permissions / interventions without any re-activation of the ecosystem
 
 ### Declarative API
 
