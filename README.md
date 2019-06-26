@@ -49,7 +49,11 @@ Secondly, Safari on iOS has a declarative [autocomplete](https://developer.apple
 
 The following is an early exploration / baseline of what this API could look like. We expect them to change drastically as we learn more about the space.
 
-Having said that, there are two complementary API components in this proposal:
+From a UX perspective, we want to get out of the way as much as possible from the web author, while still keeping users aware and in control of what's going on.
+
+![User flow](mock.gif)
+
+To support this user flow, we propose two complementary API components:
 
 * an imperative client-side [javascript API](#imperative-api)
 * a [formating convention](#formatting) for SMS messages
