@@ -32,44 +32,57 @@ SmsRetrieverClient client = SmsRetriever.getClient(this /* context */);
 Task<Void> task = client.startSmsRetriever();
 ```
 
+In order to use the native SMS retrieval mechanism, the SMS message content must be formatted appropriately, with a hashcode derived from the native app package and cert fingerprint. For example:
+
+```
+<#> Your ExampleApp verification code is: 123ABC78
+FA+9qCX9VSu
+```
+
 Secondly, Safari on iOS has a declarative [autocomplete](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_an_html_input_element) API that provides an integration with the native keyboard. iOS applies heuristics to extract OTPs from SMSes to pass it back to the `<input>` element. Here is what it looks like:
 
 ```html
 <input autocomplete="one-time-code"/>
 ```
 
-## Proposals
+## Proposal
 
+The following is an early exploration / baseline of what this API could look like. We expect them to change drastically as we learn more about the space.
 
-In this formulation, the browser will help the site obtain the contents of the SMS or OTP programmatically.  
+Having said that, there are two complementary API components in this proposal:
 
-The following is an early exploration / early baseline of what these APIs could look like. We expect them to change drastically as we learn more about the space.
+* an imperative client-side [javascript API](#imperative-api)
+* a [formating convention](#formatting) for SMS messages
 
-### SMS Receiver API
+The former gives web pages a mechanism to receive SMSes and the latter is used as a mechanism to make sure that the origin boundaries are kept without additional mediation / gesture from the user. 
 
-In addition, browsers could provide an imperative API to request the contents of an incoming SMS. Here is one possible formulation / shape, based on Android’s [SMS Retriever API](https://developers.google.com/identity/sms-retriever/overview): 
+You can find here other [alternatives](#alternatives-considered) under consideration.
+
+### Imperative API
+
+In this formulation, browsers provide an imperative API to request the contents of an incoming SMS. Here is one possible formulation / shape, based on Android’s [SMS Retriever API](https://developers.google.com/identity/sms-retriever/overview): 
 
 ```javascript
-let {content} = await navigator.sms.receive();
-```
-
-You can also control when to abort it (e.g. a custom timeout, the user has entered the code manually, etc):
-
-```javascript
-let abort = new AbortController();
-setTimeout(() => {
-  // abort after two minutes
-  abort.abort();
-}, 2 * 60 * 1000);
-  
+if (navigator.sms) {
+  alert("feature not available :(");
+  return;
+}
 try {
-  let {content} = await navigator.sms.receive(abort);
+  let {content} = await navigator.sms.receive();
+  alert("sms received! " + content);
 } catch (e) {
-  // deal with errors
+  alert("time out!");
 }
 ```
 
-### Polyfilling the declarative API
+Some corner cases are covered [here](#Spec).
+
+There are a couple of nice side effects of the imperative API:
+
+* first, it can derive the [declarative API](#Declarative-API) (but not otherwise)
+* second, it can offer a [spectrum of mediation](UX) / consent / permissions / interventions without any re-activation of the ecosystem
+
+### Declarative API
 
 An interesting implication of uncovering the lower level imperative API is that it can derive the high level declarative API without any loss of (a) browser mediation and (b) graceful degradation.
 
@@ -131,47 +144,30 @@ customElements.define("sms-receiver",
 });
 ```
 
+### Formatting
 
-In order to use native SMS retrieval mechanism, the SMS message contents must be formatted appropriately, and the current format is oriented around native apps. For example:
-
-```
-<#> Your ExampleApp verification code is: 123ABC78
-FA+9qCX9VSu
-```
-
-Where `FA+9qCX9VSu` is a hashcode derived from the native app package and cert fingerprint.
-
-In one possible formulation, to make SMS available to a browser, the SMS would have to be targeted at the current browser (e.g. use the browser app hash at the end of the SMS), and developer would also have to specify an intended origin. For example:
+In this proposal, to support the isolation between different origins (without extra user mediation), we define a formatting convention in the SMS message that enables them to be addressed to a specific origin and routed by the browser securely:
 
 ```
-<#> Your ExampleApp code is: 123ABC78
-From: https://example.com
-FA+9qCX9VSu
-```
-
-For a single or small set of supporting browsers, developers may be able to hardcode or determine the appropriate targeting. This targeting mechanism for native apps may be made more flexible / ergonomic in the future.
-
-The current native SMS Retriever API does not provide any UI using the retrieval process, but the native SMS notifications are still triggered, and the SMS messages will remain in the user’s message history.
-
-#### Formatting
-
-Android recently launched (TODO(goto): add link) an SMS format that skips the app hash, prompting the user for consent. In this formulation, the format of the SMS could contain the desired origin which the browser uses to mediate:
-
-```
-Your ExampleApp code is: 123ABC78
+Your OTP is: 123ABC78.
 To: https://example.com
 ```
 
-While GMS core releases are still rolling out, there is an interesting trick we could do to combine URLs with App Hashes, embedding them as URL parameters (making them valid android SMSes as well as valid web urls, which we can use to derive origins):
+Long term, we expect the formatting to be browser agnostic, but while GMS core releases are still rolling out, Android still needs an [app hash](https://developers.google.com/identity/sms-retriever/verify#computing_your_apps_hash_string) to know which APK it should redirect the SMS to. There is an interesting trick we could do to combine URLs with App Hashes, embedding them as URL parameters (making them valid android SMSes as well as valid web urls, which we can use to derive origins):
 
 ```
 Your ExampleApp code is: 123ABC78
-To: https://code.sgo.to?s3LhKBB0M33
+To: https://code.sgo.to?hash=s3LhKBB0M33
 ```
 
-Once the browser has the SMS contents it can return the entire SMS message to the caller. The caller can then extract the OTP from the message (using whatever formatting they chose) and complete the phone number verification flow as if the user had typed the OTP (and if programmatic retrieval fails, user can always simply read the SMS and type OTP manually as currently done).
+In this formulation, the last few characters (e.g. `s3LhKBB0M33`) are used to route the SMS from Android to the Browser APK and the origin is used to route from the Browser process to the right requesting tab. 
 
-Note that an advantage to an imperative API is that developer has more flexibility over when the API will be called and the UX around it. For example, unlike a OTP form field, the UI need not be blocked waiting for the user input. Phone number verification would happen in the background while user interacts with other content.
+Another nice side effect of this formulation is that the URL could be used as a fallback mechanism in case anything fails (e.g. poor mobile network reception leads to an SMS being delivered many hours/days later).
+
+```
+Your ExampleApp code is: 123ABC78
+To: https://code.sgo.to/verify.php?otp=123ABC78&hash=s3LhKBB0M33
+```
 
 ### OTP Retrieval API
 
@@ -183,7 +179,7 @@ let otp = await navigator.credentials.get({otp: true});
 verify(otp);
 ```
 
-## Alternatives Under Consideration
+## Alternatives Considered
 
 ### Heuristic Autofill
 
@@ -275,3 +271,22 @@ Online banks use SMS OTP to convey a secret to the user for the purpose of multi
 
 Ride-sharing services often ask user to provide a phone number, and before taking a first ride, check that the user actually owns and is reachable at this number by sending and confirming a one-time code.
 
+### UX
+
+### Spec
+
+You can also control when to abort it (e.g. a custom timeout, the user has entered the code manually, etc):
+
+```javascript
+let abort = new AbortController();
+setTimeout(() => {
+  // abort after two minutes
+  abort.abort();
+}, 2 * 60 * 1000);
+  
+try {
+  let {content} = await navigator.sms.receive(abort);
+} catch (e) {
+  // deal with errors
+}
+```
