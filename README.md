@@ -13,7 +13,7 @@ Developers use phone numbers for many aspects of building an application:
 
 The challenge is that usage of phone numbers for these purposes typically requires proof that a user currently controls the phone number (phone number verification), and existing verification mechanisms on the web are cumbersome, requiring users to manually input one-time verification codes. Easing this has been a long standing feature request for the web from many of the largest global developers.
 
-There are a variety of ways to verify control over phone numbers, but a randomly generated one-time passcode (OTP) sent by SMS to the number in question is the most common. Presenting this code back to developer’s server proves control of the phone number. In this proposal, we focus on the ability to programmatically obtain one-time codes from SMS as solution to ease the friction and failure points of manual user input of SMS codes, which is prone to error and phishing. Such APIs for SMS retrieval already exist on Android (e.g. [Play Services API](https://developers.google.com/identity/sms-retriever/overview) used by thousands of apps and millions of daily users, e.g. the [Flutter Polyfill](https://medium.com/@debutinfotech/sms-retriever-a-new-plugin-to-effectively-retrieve-sms-on-flutter-based-android-apps-afcfe281e1aa)).
+There are a variety of ways to verify control over phone numbers, but a randomly generated one-time passcode (OTP) sent by SMS to the number in question is the most common. Presenting this code back to developer’s server proves control of the phone number. In this proposal, we focus on the ability to programmatically obtain one-time codes from SMS as solution to ease the friction and failure points of manual user input of SMS codes, which is prone to error and phishing.
 
 ## Goals
 
@@ -37,7 +37,7 @@ Ride-sharing services often ask user to provide a phone number, and before takin
 
 There are two comparable APIs that we should use as a reference.
 
-First, the native [Android API](https://developers.google.com/identity/sms-retriever/overview) is an **imperative** API that gives access to the **full** contents of the SMS message. Here is a code snippet:
+First, the native [Android API](https://developers.google.com/identity/sms-retriever/overview) is an **imperative** API that gives access to the **full** contents of the SMS message. Here is what it looks like:
 
 ```java
 // Starts SmsRetriever, which waits for ONE matching SMS message until timeout
@@ -47,7 +47,7 @@ SmsRetrieverClient client = SmsRetriever.getClient(this /* context */);
 Task<Void> task = client.startSmsRetriever();
 ```
 
-Secondly, Safari on iOS has a declarative [autocomplete](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_an_html_input_element) API that provides an integration with the native keyboard. Here is a cod snippet:
+Secondly, Safari on iOS has a declarative [autocomplete](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_an_html_input_element) API that provides an integration with the native keyboard. iOS applies heuristics to extract OTPs from SMSes to pass it back to the `<input>` element. Here is what it looks like:
 
 ```html
 <input autocomplete="one-time-code"/>
