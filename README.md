@@ -123,21 +123,18 @@ customElements.define("sms-receiver",
       this.receive();
     }
     async receive() {
-        try {
-            let {content} = await navigator.sms.receive();
-            console.log("Received an SMS message!");
-            console.log(content);
-            let regex = this.getAttribute("regex");
-            let code = new RegExp(regex).exec(content);
-            if (!code) {
-                console.log("SMS message doesn't match regex");
-                 return;
-            }
-            this.value = code[1];
-            this.form.submit();
-        } catch (e) {
-            console.log(e);
+      try {
+        let {content} = await navigator.sms.receive();
+        let regex = this.getAttribute("regex");
+        let code = new RegExp(regex).exec(content);
+        if (!code) {
+          return;
         }
+        this.value = code[1];
+        this.form.submit();
+      } catch (e) {
+        console.log(e);
+      }
     }
   }, {
     extends: "input"
@@ -156,7 +153,7 @@ To: https://example.com
 Long term, we expect the formatting to be browser agnostic, but while GMS core releases are still rolling out, Android still needs an [app hash](https://developers.google.com/identity/sms-retriever/verify#computing_your_apps_hash_string) to know which APK it should redirect the SMS to. There is an interesting trick we could do to combine URLs with App Hashes, embedding them as URL parameters (making them valid android SMSes as well as valid web urls, which we can use to derive origins):
 
 ```
-Your ExampleApp code is: 123ABC78
+Your OTP is: 123ABC78.
 To: https://code.sgo.to?hash=s3LhKBB0M33
 ```
 
@@ -165,45 +162,13 @@ In this formulation, the last few characters (e.g. `s3LhKBB0M33`) are used to ro
 Another nice side effect of this formulation is that the URL could be used as a fallback mechanism in case anything fails (e.g. poor mobile network reception leads to an SMS being delivered many hours/days later).
 
 ```
-Your ExampleApp code is: 123ABC78
+Your OTP is: 123ABC78.
 To: https://code.sgo.to/verify.php?otp=123ABC78&hash=s3LhKBB0M33
 ```
 
-### OTP Retrieval API
+## Security
 
-Provide a higher level API for obtaining OTP, which could be provided by a variety of transport mechanisms (email, time-based authenticator apps running on the device, not just SMS)
-
-```
-// This is just a draft/example of what a API could look like.
-let otp = await navigator.credentials.get({otp: true});
-verify(otp);
-```
-
-## Alternatives Considered
-
-### Heuristic Autofill
-
-In addition to autofill annotations, the browser could also heuristically extract and autofill OTP, with user confirmation and without explicit developer support. 
-
-However, getting access to SMS without coordination from the developer (i.e. without explicit formatting of the SMS or indication that developer is expecting an SMS) will be a challenge, as browser would require ongoing access to SMS. 
-
-Note that iOS provides heuristic-based OTP autofill, but iOS provides browser / keyboard access to SMS; but on Android, browsers may not have or even be able to request indefinite SMS access.
-
-### Phone Number Assertion API
-
-If phone number has already been verified for a given device or user account, browser could return a verifiable assertion of the phone number. 
-
-```
-// This is just a draft/example of what a API could look like.
-let phone = await navigator.credentials.get({phone: true});
-verify(phone);
-```
-
-This could be implemented by having developer interact with identity providers (IDPs), which have already verified and are aware of the user’s phone number, and could vouch for this information, in the same way Google Sign-In and similar federated identity flows currently work for email addresses. 
-
-Several identity providers such as Facebook (Account Kit), Truecaller, and others already provide APIs like this verified phone numbers.
-
-## Security and Privacy Considerations
+## Privacy
 
 ### User Tracking
 
@@ -237,29 +202,29 @@ Captcha APIs provide an alternative anti-abuse signals (i.e. that user is not a 
 
 Phone numbers are sometimes used for carrier billing schemes. Payment APIs offer an alternative as well as signal of user quality (having a payment instrument often involves identity verification and ability / history of being able to pay).
 
-## Frequently Asked Questions
+## Annex
 
-### Why are we telling developers to use phone numbers? They can be hijacked, change ownership, used to track users, etc.
+### Frequently Asked Questions
+
+#### Why are we telling developers to use phone numbers? They can be hijacked, change ownership, used to track users, etc.
 
 We aren’t telling developers to use phone number; they are already using them. Despite problems, phone numbers are useful for various purposes (see intro). In the absence of alternatives to achieve these useful things, developers will continue to use phone numbers and users will struggle with them. This proposal makes the web more usable in the short term (in particular matching functionality that already existings natively), but in the long run, we hope to move the ecosystem off of phone numbers as alternatives for the need functionality become available. Given the time-scale of such a transition, action in the short-term to reach experience parity seems necessary.
 
-### Why is this using SMS OTP as a verification mechanism? SMS OTP are slow, expensive, phishable, etc.
+#### Why is this using SMS OTP as a verification mechanism? SMS OTP are slow, expensive, phishable, etc.
 
 SMS is the most common existing verification mechanism; this proposal aims to streamline flows that already exist by mitigating the need for user involvement/action. Although this does not address the more fundamental problems, it may make some situations better (e.g. users don’t handle OTP manually, hence less conditioned to be phished), but starting to move developers to a programmatic model would be a potential stepping stone to better mechanisms.
 
-### Is this implementable on iOS?
+#### Is this implementable on iOS?
 
 Yes, iOS already uses a declarative model (form annotation “[one-time-code](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_an_html_input_element)”) and heuristically extracts and suggests OTP from SMS. They could implement an imperative API or support other alternatives like facilitating interaction with identity providers if desired.
 
-### Is this implementable on desktop?
+#### Is this implementable on desktop?
 
 Yes, browser need not look for SMS on the local device. For example, if Chromesync is enabled across desktop and mobile devices, Chrome could retrieve on one device and return the SMS content on another. Or locally, a desktop instance of a browser could use Bluetooth to talk to a nearby phone and have an instance of the browser on the mobile device retrieve and return the SMS.
 
-### Why can’t we use a model like having developer tell us the OTP and let them know if there is a match?
+#### Why can’t we use a model like having developer tell us the OTP and let them know if there is a match?
 
 The developer needs something that can be verified on their server, a yes/no response is not sufficient. Claiming that the phone number is active on the device would require a response signed in some way to make it verifiable. This could be done in a number of ways, but is a major departure from the current OTP model and necessitate major changes from developers (i.e. change their backend server logic to process these claims; whereas just returning the SMS contents with the OTP means primarily only a frontend change an minimal backend work ... perhaps only changing the message template format, rather than security-sensitive backend logic). However, the longer-term intent with more comprehensive Identity APIs is to provide verifiable assertions of phone ownership, which would be compelling for developers to adopt and change their system to accept if it meant avoiding the need for sending SMS.
-
-## Annex
 
 ### Scenarios
 
@@ -272,6 +237,40 @@ Online banks use SMS OTP to convey a secret to the user for the purpose of multi
 Ride-sharing services often ask user to provide a phone number, and before taking a first ride, check that the user actually owns and is reachable at this number by sending and confirming a one-time code.
 
 ### UX
+
+### Alternatives Considered
+
+#### Heuristic Autofill
+
+In addition to autofill annotations, the browser could also heuristically extract and autofill OTP, with user confirmation and without explicit developer support. 
+
+However, getting access to SMS without coordination from the developer (i.e. without explicit formatting of the SMS or indication that developer is expecting an SMS) will be a challenge, as browser would require ongoing access to SMS. 
+
+Note that iOS provides heuristic-based OTP autofill, but iOS provides browser / keyboard access to SMS; but on Android, browsers may not have or even be able to request indefinite SMS access.
+
+#### Phone Number Assertion API
+
+If phone number has already been verified for a given device or user account, browser could return a verifiable assertion of the phone number. 
+
+```
+// This is just a draft/example of what a API could look like.
+let phone = await navigator.credentials.get({phone: true});
+verify(phone);
+```
+
+This could be implemented by having developer interact with identity providers (IDPs), which have already verified and are aware of the user’s phone number, and could vouch for this information, in the same way Google Sign-In and similar federated identity flows currently work for email addresses. 
+
+Several identity providers such as Facebook (Account Kit), Truecaller, and others already provide APIs like this verified phone numbers.
+
+#### OTP Retrieval API
+
+Provide a higher level API for obtaining OTP, which could be provided by a variety of transport mechanisms (email, time-based authenticator apps running on the device, not just SMS)
+
+```
+// This is just a draft/example of what a API could look like.
+let otp = await navigator.credentials.get({otp: true});
+verify(otp);
+```
 
 ### Spec
 
