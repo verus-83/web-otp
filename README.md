@@ -33,15 +33,15 @@ Online banks use SMS OTP to convey a secret to the user for the purpose of multi
 
 Ride-sharing services often ask user to provide a phone number, and before taking a first ride, check that the user actually owns and is reachable at this number by sending and confirming a one-time code.
 
-## Proposals
+## Prior Art
 
-The developer must obtain the phone number via their existing mechanisms (e.g. user form input, autofill, etc.) and send an SMS (e.g. via Twilio) with a one-time code to the number, which they must generate and track on their servers.
+There are a couple of comparable / related APIs that we should use as a reference.
 
-In this formulation, the browser will help the site obtain the contents of the SMS or OTP programmatically.  
+First, the native [Android API](https://developers.google.com/identity/sms-retriever/overview) is an **imperative** API that gives access to the **full** contents of the SMS message. Here is a code snippet:
 
-The following is an early exploration / early baseline of what these APIs could look like. We expect them to change drastically as we learn more about the space.
+```java
 
-### Autofill Annotations
+```
 
 This would provide a declarative API for developers: annotate form fields with “one-time-code” to signal to browser where to autofill an SMS OTP. The SMS would have to be structured in such a way that the SMS can be identified and the OTP could be parsed and filled.
 
@@ -50,6 +50,14 @@ This would provide a declarative API for developers: annotate form fields with �
 ```
 
 iOS already uses this model ([documentation](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_an_html_input_element) - some analysis).
+
+## Proposals
+
+The developer must obtain the phone number via their existing mechanisms (e.g. user form input, autofill, etc.) and send an SMS (e.g. via Twilio) with a one-time code to the number, which they must generate and track on their servers.
+
+In this formulation, the browser will help the site obtain the contents of the SMS or OTP programmatically.  
+
+The following is an early exploration / early baseline of what these APIs could look like. We expect them to change drastically as we learn more about the space.
 
 ### SMS Receiver API
 
@@ -74,6 +82,69 @@ try {
   // deal with errors
 }
 ```
+
+### Polyfilling the declarative API
+
+An interesting implication of uncovering the lower level imperative API is that it can derive the high level declarative API without any loss of (a) browser mediation and (b) graceful degradation.
+
+Here is an example of a custom element that can be embedded in pages to polyfill existing deployments of the declarative autofill API:
+
+```javascript
+/**
+ *  <sms-receiver> is a custom element that extends <input> elements
+ *  with an autocomplete="one-time-code" with the imperative
+ *  navigator.sms.receive() API. Submits the form when it receives
+ *  the SMS.
+ * 
+ *  Example:
+ *
+ *  <form>
+ *    <input is="sms-receiver" 
+ *           name="otp" 
+ *           regex="\s([A-Za-z0-9]{6})\." 
+ *           autocomplete="one-time-code" 
+ *           placeholder="Code (6 digits)" 
+ *           required />
+ *    <input type="submit" />
+ *  </form>
+ *
+ *  Parameters:
+ *
+ *    - regex: a regular expression used to parse the contents of the
+ *             sms message and get the OTP code.
+ *
+ *
+ *  Degrades gracefully to the autofill UI or manual input when the
+ *  API is not available.
+ *
+ */
+customElements.define("sms-receiver",
+  class extends HTMLInputElement {
+    connectedCallback() {
+      this.receive();
+    }
+    async receive() {
+        try {
+            let {content} = await navigator.sms.receive();
+            console.log("Received an SMS message!");
+            console.log(content);
+            let regex = this.getAttribute("regex");
+            let code = new RegExp(regex).exec(content);
+            if (!code) {
+                console.log("SMS message doesn't match regex");
+                 return;
+            }
+            this.value = code[1];
+            this.form.submit();
+        } catch (e) {
+            console.log(e);
+        }
+    }
+  }, {
+    extends: "input"
+});
+```
+
 
 In order to use native SMS retrieval mechanism, the SMS message contents must be formatted appropriately, and the current format is oriented around native apps. For example:
 
