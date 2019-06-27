@@ -174,6 +174,8 @@ To: https://code.sgo.to/verify.php?otp=123ABC78&hash=s3LhKBB0M33
 
 From a security perspective, the biggest consideration with this API is crossing an origin boundary, which we believe is mitigated by the [formatting](#formatting) addressing scheme.
 
+This API is also **only** available via `https`.
+
 ## Privacy
 
 From a privacy perspective, there are a few considerations to be taken:
@@ -182,7 +184,7 @@ From a privacy perspective, there are a few considerations to be taken:
 - fingerprinting
 - awareness and control
 
-The first concern is somewhat easy to address: we propose the API should be unavailable outside of top level frames.
+The first concern is somewhat easy to address: we propose the API should be **unavailable outside of top level frames**.
 
 The second and the third concerns are hard to be talked about abstractly, outside of a specific [UX formulation](#UX). We believe, however, that under the proposed UX formulation, the following attack vectors are addressed.
 
