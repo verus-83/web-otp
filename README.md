@@ -51,7 +51,7 @@ The following is an early exploration / baseline of what this API could look lik
 
 From a UX perspective, we want to get out of the way as much as possible from the web author, while still keeping users aware and in control of what's going on.
 
-<center><img src="mock.gif" width="250px"></center>
+<img src="mock.gif" width="250px">
 
 To support this user flow, we propose two complementary API components:
 
@@ -219,6 +219,14 @@ Online banks use SMS OTP to convey a secret to the user for the purpose of multi
 Ride-sharing services often ask user to provide a phone number, and before taking a first ride, check that the user actually owns and is reachable at this number by sending and confirming a one-time code.
 
 ### UX
+
+#### Autofill UX
+
+<img src="mock2.gif" width="250px">
+
+#### Unblocking UX
+
+<img src="mock3.png" width="250px">
 
 ### Alternatives Considered
 
