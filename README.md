@@ -220,13 +220,17 @@ Ride-sharing services often ask user to provide a phone number, and before takin
 
 ### UX
 
-#### Autofill UX
+#### Automatic UX
 
 <img src="mock2.gif" width="250px">
 
 #### Unblocking UX
 
 <img src="mock3.png" width="250px">
+
+#### Autofill UX
+
+<img src="mock4.png" width="250px">
 
 ### Alternatives Considered
 
