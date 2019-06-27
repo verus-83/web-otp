@@ -282,7 +282,27 @@ verify(otp);
 
 ### Spec
 
-You can also control when to abort it (e.g. a custom timeout, the user has entered the code manually, etc):
+There are a couple of alternatives that we considered from an API shape perspective. First, subclassing `EventTarget`:
+
+```javascript
+let receiver = new SMSReceiver();
+receiver.addEventListener("receive", ({content}) => {
+  console.log(content);
+});
+receiver.receive();
+```
+
+But it seemed awkward since this is a one-shot event.
+
+The other formulation that we think is worth noting is to use a static method outside of `navigator`. Example:
+
+```javascript
+let {content} = SMSReceiver.receive();
+```
+
+This could work equally well compared to `navigator.sms.receive()`, but would pollute the global namespace rather than the `navigator` namespace.
+
+The other consideration here is whether to enable aborting the request or maybe pass a custom timeout:
 
 ```javascript
 let abort = new AbortController();
