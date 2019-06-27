@@ -240,7 +240,7 @@ There are many different UX formulations that are under consideration, with diff
 
 <img src="mock4.png" width="250px">
 
-##### Opt-In
+##### Opt-In UX
 
 <img src="mock5.png" width="250px">
 
