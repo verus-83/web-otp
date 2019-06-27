@@ -84,7 +84,7 @@ Some corner cases are covered [here](#Spec).
 There are a couple of nice side effects of the imperative API:
 
 * first, it can derive the [declarative API](#Declarative-API) (but not otherwise)
-* second, it can offer a [spectrum of mediation](#UX) / consent / permissions / interventions without any re-activation of the ecosystem
+* second, it can offer a spectrum of mediation / consent / permissions / interventions without any re-activation of the ecosystem (e.g. a [permission-less UX](#automatic-ux), a [non-blocking UX](#unblocking-ux) and an [autofill UX](#autofill-ux))
 
 ### Declarative API
 
@@ -172,7 +172,19 @@ To: https://code.sgo.to/verify.php?otp=123ABC78&hash=s3LhKBB0M33
 
 ## Security
 
+From a security perspective, the biggest consideration with this API is crossing an origin boundary, which we believe is mitigated by the [formatting](#formatting) addressing scheme.
+
 ## Privacy
+
+From a privacy perspective, there are a few considerations to be taken:
+
+- inner frames and ad networks
+- fingerprinting
+- awareness and control
+
+The first concern is somewhat easy to address: we propose the API should be unavailable outside of top level frames.
+
+The second and the third concerns are hard to be talked about abstractly, outside of a specific [UX formulation](#UX). We believe, however, that under the proposed UX formulation, the following attack vectors are addressed.
 
 ### User Tracking
 
