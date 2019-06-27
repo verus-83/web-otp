@@ -198,55 +198,47 @@ However, the ability to verify the user’s phone number automatically in the ba
 
 SMS OTP are readily phishable and an existing widespread concern. While not making this worse, this proposal attempts to mitigate by avoiding and lessening the occurrence of users to manually enter OTP (so as to be less conditioned to phishing, and/or more conscious of where they enter OTP), and by making the OTP only available via programmatic mechanism to the intended recipient (i.e. by specifying the target origin in the message contents).
 
-## Related APIs
+## Annex
 
-### Credential Management and WebAuthn APIs 
+### Related APIs
+
+#### Credential Management and WebAuthn APIs 
 
 CM API and WebAuthn facilitate alternative forms of authentication. CM API facilitates interaction with password credentials and WebAuthn allows developers to interact with authentication hardware that provides much stronger, phishing resistant, and more usable multi-factor authentication on the web. While better alternatives for authentication, these APIs do not provide any communication mechanism or reputation signals that developers also use phone numbers for, so are not a comprehensive alternative to phone number or SMS OTP. 
 
-### Notifications
+#### Notifications
 
 Browser notification APIs provide a communication channel to developers, but developers often still prefer or also request a verified phone numbers since it checks that the user is reachable at this number and facilitates voice communication and reasonably real-time two-way communication on practically any time of mobile phone (no dependence on OS or version, pretty much all phones can handle SMS). 
 
-### OAuth etc.
+#### OAuth etc.
 
 OAuth and similar protocols allow developers to obtain information such as verified phone number from an identity provider (IDP). However, this relies on user having provided, verified, and maintain their phone number with the IDP, and be comfortable using this model to share data (e.g. knowing their usage of 3p services). The IDPs themselves (unless an authoritative provider for a phone number, such as a carrier), need to verify phone number ownership, and typically still use SMS OTP for that purpose. 
 
-### reCAPTCHA
+#### reCAPTCHA
 
 Captcha APIs provide an alternative anti-abuse signals (i.e. that user is not a bot) that developer sometime rely on phone numbers for (in that phone numbers are often limited and require human involvement to procure, and as such as hard to produce at scale).
 
-### Payment APIs
+#### Payment APIs
 
 Phone numbers are sometimes used for carrier billing schemes. Payment APIs offer an alternative as well as signal of user quality (having a payment instrument often involves identity verification and ability / history of being able to pay).
 
-## Annex
+### Alternatives Considered
 
-### Scenarios
+#### UX
 
-#### 1. As an authentication signal
+There are many different UX formulations that are under consideration, with different trade-offs between user awareness, control and friction. Here are the ones we are exploring:
 
-Online banks use SMS OTP to convey a secret to the user for the purpose of multi-factor authentication (e.g. when signing in to new device), re-auth (at time of a transaction), or account recovery (in the event user were to lose access to other multifactor options).
-
-#### 2. To establish reachability
-
-Ride-sharing services often ask user to provide a phone number, and before taking a first ride, check that the user actually owns and is reachable at this number by sending and confirming a one-time code.
-
-### UX
-
-#### Automatic UX
+##### Automatic UX
 
 <img src="mock2.gif" width="250px">
 
-#### Unblocking UX
+##### Unblocking UX
 
 <img src="mock3.png" width="250px">
 
-#### Autofill UX
+##### Autofill UX
 
 <img src="mock4.png" width="250px">
-
-### Alternatives Considered
 
 #### Heuristic Autofill
 
