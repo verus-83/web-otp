@@ -240,6 +240,10 @@ There are many different UX formulations that are under consideration, with diff
 
 <img src="mock4.png" width="250px">
 
+##### Opt-In
+
+<img src="mock5.png" width="250px">
+
 #### Heuristic Autofill
 
 In addition to autofill annotations, the browser could also heuristically extract and autofill OTP, with user confirmation and without explicit developer support. 
