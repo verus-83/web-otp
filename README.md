@@ -242,7 +242,7 @@ There are many different UX formulations that are under consideration, with diff
 
 ##### Opt-In UX
 
-<img src="mock5.png" width="250px">
+<img src="mock6.png" width="250px">
 
 #### Heuristic Autofill
 
