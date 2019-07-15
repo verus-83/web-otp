@@ -151,14 +151,14 @@ In this proposal, to support the isolation between different origins (without ex
 
 ```
 Your OTP is: 123ABC78.
-To: https://example.com
+For: https://example.com
 ```
 
 Long term, we expect the formatting to be browser agnostic, but while GMS core releases are still rolling out, Android still needs an [app hash](https://developers.google.com/identity/sms-retriever/verify#computing_your_apps_hash_string) to know which APK it should redirect the SMS to. There is an interesting trick we could do to combine URLs with App Hashes, embedding them as URL parameters (making them valid android SMSes as well as valid web urls, which we can use to derive origins):
 
 ```
 Your OTP is: 123ABC78.
-To: https://code.sgo.to?hash=s3LhKBB0M33
+For: https://code.sgo.to?hash=s3LhKBB0M33
 ```
 
 In this formulation, the last few characters (e.g. `s3LhKBB0M33`) are used to route the SMS from Android to the Browser APK and the origin is used to route from the Browser process to the right requesting tab. 
@@ -167,7 +167,7 @@ Another nice side effect of this formulation is that the URL could be used as a 
 
 ```
 Your OTP is: 123ABC78.
-To: https://code.sgo.to/verify.php?otp=123ABC78&hash=s3LhKBB0M33
+For: https://code.sgo.to/verify.php?otp=123ABC78&hash=s3LhKBB0M33
 ```
 
 ## Security
