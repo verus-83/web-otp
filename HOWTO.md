@@ -42,3 +42,5 @@ main();
 | Beta chrome    | xFJnfg75+8v   |
 | Prod chrome    | EvsSSj4C6vl   |
 
+For other browser implementations, here is how to [compute app hashes](https://developers.google.com/identity/sms-retriever/verify#computing_your_apps_hash_string).
+
