@@ -32,3 +32,13 @@ async function main() {
 
 main();
 ```
+
+# App Hashes for different channels
+
+| Browser        | App Hash      |
+| -------------  | ------------- |
+| Local chrome   | s3LhKBB0M33   |
+| Canary chrome  | PqEvUq15HeK   |
+| Beta chrome    | xFJnfg75+8v   |
+| Prod chrome    | EvsSSj4C6vl   |
+
