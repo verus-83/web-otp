@@ -8,7 +8,7 @@ The SMS Receiver API is currently available in chrome canaries under a flag:
 4) Send a SMS to your phone, following the [server side convention](https://github.com/samuelgoto/sms-receiver#formatting):
 
 ```
-<#> Your OTP is 123ABC.
+Your OTP is 123ABC.
 For: https://code.sgo.to?PqEvUq15HeK
 ```
 
