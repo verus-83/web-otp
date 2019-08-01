@@ -9,7 +9,7 @@ The SMS Receiver API is currently available in chrome canaries under a flag:
 
 ```
 Your OTP is 123ABC.
-For: https://code.sgo.to?PqEvUq15HeK
+For: https://code.sgo.to/?otp=123ABC&app=PqEvUq15HeK
 ```
 
 The app hash for `chrome chanaries` is `PqEvUq15HeK`.
