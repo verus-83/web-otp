@@ -170,6 +170,8 @@ Your OTP is: 123ABC78.
 For: https://code.sgo.to/verify.php?otp=123ABC78&hash=s3LhKBB0M33
 ```
 
+The `For` footer should point at a `HTTPS` or `localhost` URL.
+
 ## Security
 
 From a security perspective, the biggest consideration with this API is crossing an origin boundary, which we believe is mitigated by the [formatting](#formatting) addressing scheme.
