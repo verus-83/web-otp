@@ -176,7 +176,9 @@ The `For` footer should point at a `HTTPS` or `localhost` URL.
 
 From a security perspective, the biggest consideration with this API is crossing an origin boundary, which we believe is mitigated by the [formatting](#formatting) addressing scheme.
 
-This API is also **only** available via `https`.
+This API is also **only** available via `https` or `localhost` (for development purposes). We don't entirely adopt the concept of [trustworthy urls](https://www.w3.org/TR/powerful-features/#is-url-trustworthy) because it covers more schemes (e.g. `data://123`) than we would like to (our initial intuition is that (a) `https` and `localhost` covers most cases and (b) it needs to be clear to the user what public facing entity its sending the SMS). 
+
+This API is also **only** available on main frames, to avoid abuse by third party iframes / libraries.
 
 ## Privacy
 
