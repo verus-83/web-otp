@@ -32,14 +32,38 @@ main();
 </script>
 ```
 
+Start your local server, e.g.:
+
+```
+python -m SimpleHTTPServer 8080
+```
+
+Connect it to your local web server through your favorite method:
+
+```
+adb reverse tcp:8080 tcp:8080
+```
+
 And send an SMS to your phone, following the [server side convention](https://github.com/samuelgoto/sms-receiver#formatting). For example:
 
 ```
 Your OTP is 123ABC.
-For: https://code.sgo.to/?otp=123ABC&app=PqEvUq15HeK
+For: http://localhost:8080/?otp=123ABC&app=PqEvUq15HeK
 ```
 
 The app hash for `chrome chanaries` is `PqEvUq15HeK`.
+
+# Deploy
+
+Outside of your local development, it is important to know that this API only works over HTTPS:
+
+1) Make sure you deploy to your https endpoints
+2) Make sure to send SMSes formatted against your https endpoints
+
+```
+Your OTP is 123ABC.
+For: https://example.com/?otp=123ABC&app=PqEvUq15HeK
+```
 
 # App Hashes for different channels
 
