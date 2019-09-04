@@ -81,12 +81,12 @@ For: https://example.com/?otp=123ABC&app=PqEvUq15HeK
 
 Here is a checklist of common issues:
 
-[ ] I downloaded [chrome canary](https://play.google.com/store/apps/details?id=com.chrome.canary) in my **personal** profile.
-[ ] I enabled `Experimental Web Platform features` under `chrome://flags`.
-[ ] I navigated to `https://sms-retriever-sample.glitch.me/` being careful not to drop the `https` scheme.
-[ ] While developing locally, I made sure to include the canary app hash `PqEvUq15HeK` **and** the `otp` parameter.
-[ ] While deploying, I made sure to use my `https` endpoint and update the SMS format accordingly.
-[ ] While in origin trials, I made sure to update the app hash to chrome prod `EvsSSj4C6vl`.
+* I downloaded [chrome canary](https://play.google.com/store/apps/details?id=com.chrome.canary) in my **personal** profile.
+* I enabled `Experimental Web Platform features` under `chrome://flags`.
+* I navigated to `https://sms-retriever-sample.glitch.me/` being careful not to drop the `https` scheme.
+* While developing locally, I made sure to include the canary app hash `PqEvUq15HeK` **and** the `otp` parameter.
+* While deploying, I made sure to use my `https` endpoint and update the SMS format accordingly.
+* While in origin trials, I made sure to update the app hash to chrome prod `EvsSSj4C6vl`.
 
 ## App Hashes for different channels
 
