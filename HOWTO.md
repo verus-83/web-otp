@@ -1,11 +1,15 @@
 # How to use the SMS Receiver API
 
-The SMS Receiver API is currently available in chrome canaries under a flag:
+## Trying it out
 
-1) Download chrome canary ([android](https://play.google.com/store/apps/details?id=com.chrome.canary), [desktop](https://www.google.com/chrome/canary/)) in your personal profile, **not** your work profile (known [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1000548)).
+The SMS Receiver API is currently available in chrome canaries under a flag. Here is how to try it out:
+
+1) Download chrome canary for [android](https://play.google.com/store/apps/details?id=com.chrome.canary) in your personal profile, **not** your work profile (known [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1000548)).
 2) Navigate to `chrome://flags` and enable `Experimental Web Platform features`.
 3) Restart your chrome canary browser (make sure to use your personal profile, **not** your work profile (known [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1000548))).
-4) Navigate to a test page, e.g. https://sms-retriever-sample.glitch.me/
+4) Navigate to the following test page: https://sms-retriever-sample.glitch.me/
+
+## Developing
 
 To implement this in your app, you want to use the following snippet in your page:
 
