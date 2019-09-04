@@ -81,7 +81,7 @@ For: https://example.com/?otp=123ABC&app=PqEvUq15HeK
 
 Here is a checklist of common issues:
 
-* I downloaded [chrome canary](https://play.google.com/store/apps/details?id=com.chrome.canary) in my **personal** profile.
+* I downloaded [chrome canary](https://play.google.com/store/apps/details?id=com.chrome.canary) in my **personal** profile **not** my work profile (known [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1000548)).
 * I enabled `Experimental Web Platform features` under `chrome://flags`.
 * I navigated to `https://sms-retriever-sample.glitch.me/` being careful not to drop the `https` scheme.
 * While developing locally, I made sure to include the canary app hash `PqEvUq15HeK` **and** the `otp` parameter.
