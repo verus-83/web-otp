@@ -6,7 +6,7 @@ The SMS Receiver API is currently available in chrome canaries under a flag. Her
 
 1) Download chrome canary for [android](https://play.google.com/store/apps/details?id=com.chrome.canary) in your personal profile, **not** your work profile (known [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1000548)).
 2) Navigate to `chrome://flags` and enable `Experimental Web Platform features`.
-3) Restart your chrome canary browser (make sure to use your personal profile, **not** your work profile (known [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1000548))).
+3) Restart your chrome canary browser (make sure to use your personal profile, **not** your work profile (known [bug](https://bugs.chromium.org/p/chromium/issues/detail?id=1000548)).
 4) Navigate to the following test page: https://sms-retriever-sample.glitch.me/
 
 ## Developing
