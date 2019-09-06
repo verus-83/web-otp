@@ -1,6 +1,8 @@
 
 # SMS Receiver API
 
+Discussions welcomed [here](https://github.com/samuelgoto/sms-receiver/issues/new).
+
 ## Introduction
 
 Developers use phone numbers for many aspects of building an application:
