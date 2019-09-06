@@ -1,3 +1,4 @@
+
 # SMS Receiver API
 
 ## Introduction
@@ -6,7 +7,7 @@ Developers use phone numbers for many aspects of building an application:
 
 * account identifier (especially in emerging markets where email usage is low)
 * social graph (based on phone number contact list for example)
-* communication channel (i.e. call the user, send text message, etc.)
+* communication channel (i.e. call the user, send text message, etc.)u
 * anti-abuse signal (phone numbers are limited, may require physical identity verification in some places)
 * multi-factor auth (e.g. 2-step verification with SMS OTP)
 * account recovery (e.g. look up a forgotten account, as a password reset option)
@@ -51,16 +52,86 @@ The following is an early exploration / baseline of what this API could look lik
 
 From a UX perspective, we want to get out of the way as much as possible from the web author, while still keeping users aware and in control of what's going on.
 
-<img src="mock6.gif" width="250px">
+<img src="mock3.png" width="250px">
 
 To support this user flow, we propose two complementary API components:
 
-* an imperative client-side [javascript API](#imperative-api)
+* a client-side [javascript API](#imperative-api)
 * a [formating convention](#formatting) for SMS messages
 
 The former gives web pages a mechanism to receive SMSes and the latter is used as a mechanism to make sure that the origin boundaries are kept without additional mediation / gesture from the user. 
 
-You can find here other [alternatives](#alternatives-considered) under consideration.
+## API Alternatives Considered
+
+There are two big formulations for this API that are more or less isomorphic to what's found on Android and iOS (see [prior art](#prior-art)).
+
+As we evaluate these, it is critical that we agree on a consistent criteria to measure them. From a high level perspective, we used the following ordering of constituents:
+
+1. **users** first
+2. **developers** second
+3. **browser** engineers third
+4. technical **purity** last  
+
+With users as our highest order constituent, here are some of the criteria we used to evaluate [alternatives](#alternatives-considered):
+
+- privacy: to what extent does it secure the user's data?
+- efficiency: does it increase conversion rates? decrease number of taps? 
+- complexity: does it introduce new / unnecessary concepts?
+- efficacy: does it cover all corner cases?
+
+With that, before we go any further, the following are some of the UX alternatives we considered.
+
+It is unclear if these formulations are necessarily mutually exclusive, but our intuition at the moment is that some of them are not.
+
+Before we get into API design, from a UX perspective, our initial intuition was that the following was the best we could do:
+
+<img src="mock2.gif" width="250px">
+
+Having said that, here are other alternatives we considered.
+
+### Alternatives Considered
+
+There are many different UX formulations that are under consideration, with different trade-offs between user awareness, control and friction. Here are the ones worth exploring further:
+
+##### Automatic UX
+
+<img src="mock2.gif" width="250px">
+
+##### Unblocking UX
+
+<img src="mock3.png" width="250px">
+
+##### Autofill UX
+
+<img src="mock4.png" width="250px">
+
+##### Opt-In UX
+
+<img src="mock6.gif" width="250px">
+
+##### Opt-Out UX
+
+<img src="mock.gif" width="250px">
+
+### Declarative API
+
+The easiest starting point to enable this API is a declarative autocomplete field:
+
+```html
+<input autocomplete="one-time-code"/>
+```
+
+This has well established distribution and an existing implementation by Safari. It is ergonomically simple (easy to adopt) and effective (reuses the privacy properties of autofill suggestions).
+
+However, to close the gap with the [tap-less android user experience](#prior-art), the declarative API ties ourselves to:
+
+* form elements
+* the autofill permission model
+* the introduction of the concept of one time codes to users
+
+So, working backwards from where we want to be, the declarative autofill API wouldn't allow us to fully close the gap with the kind of experience that you'd find on native apps:
+
+<img src="mock2.gif" width="250px">
 
 ### Imperative API
 
@@ -81,14 +152,11 @@ try {
 
 Some corner cases are covered [here](#Spec).
 
-There are a couple of nice side effects of the imperative API:
+There are a couple of nice side effects of the imperative API.
 
-* first, it can derive the [declarative API](#Declarative-API) (but not otherwise)
-* second, it can offer a spectrum of mediation / consent / permissions / interventions without any re-activation of the ecosystem (e.g. a [permission-less UX](#automatic-ux), a [non-blocking UX](#unblocking-ux) and an [autofill UX](#autofill-ux))
+First, it can offers browser engines a spectrum of mediation / consent / permissions / interventions without any re-activation of the ecosystem (e.g. a [permission-less UX](#automatic-ux), a [non-blocking UX](#unblocking-ux) and an [autofill UX](#autofill-ux))
 
-### Declarative API
-
-An interesting implication of uncovering the lower level imperative API is that it can derive the high level declarative API without any loss of (a) browser mediation and (b) graceful degradation.
+Second, it can derive the [declarative API](#Declarative-API) (the opposite isn't true). An interesting implication of uncovering the lower level imperative API is that it can derive the high level declarative API without any loss of (a) browser mediation and (b) graceful degradation.
 
 Here is an example of a custom element that can be embedded in pages to polyfill existing deployments of the declarative autofill API:
 
@@ -144,6 +212,10 @@ customElements.define("sms-receiver",
     extends: "input"
 });
 ```
+
+The main drawback of this formulation is that it is (deliberately) unaware of the `<input>` it is dealing with, so it can't necessarily be smart about it (e.g. suppress the virtual keyboard when the SMS arrives).
+
+Arguably, the right long term answer is to allow custom elements to have greater controls while [participating in forms]([https://github.com/mozilla/standards-positions/issues/150](https://github.com/mozilla/standards-positions/issues/150)) but that is still an area of active research. 
 
 ### Formatting
 
@@ -225,32 +297,6 @@ Captcha APIs provide an alternative anti-abuse signals (i.e. that user is not a 
 #### Payment APIs
 
 Phone numbers are sometimes used for carrier billing schemes. Payment APIs offer an alternative as well as signal of user quality (having a payment instrument often involves identity verification and ability / history of being able to pay).
-
-### Alternatives Considered
-
-#### UX
-
-There are many different UX formulations that are under consideration, with different trade-offs between user awareness, control and friction. Here are the ones we are exploring:
-
-##### Automatic UX
-
-<img src="mock2.gif" width="250px">
-
-##### Unblocking UX
-
-<img src="mock3.png" width="250px">
-
-##### Autofill UX
-
-<img src="mock4.png" width="250px">
-
-##### Opt-In UX
-
-<img src="mock6.gif" width="250px">
-
-##### Opt-Out UX
-
-<img src="mock.gif" width="250px">
 
 
 #### Heuristic Autofill
