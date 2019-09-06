@@ -245,7 +245,7 @@ Your OTP is: 123ABC78.
 For: https://example.com
 ```
 
-Long term, we expect the formatting to be browser agnostic ([current formulation](https://github.com/samuelgoto/sms-receiver/issues/4) of the long term plan), but while GMS core releases are still rolling out, Android still needs an [app hash](https://developers.google.com/identity/sms-retriever/verify#computing_your_apps_hash_string) to know which APK it should redirect the SMS to. There is an interesting trick we could do to combine URLs with App Hashes, embedding them as URL parameters (making them valid android SMSes as well as valid web urls, which we can use to derive origins):
+Long term, we expect the formatting to be browser agnostic ([current formulation](https://github.com/samuelgoto/sms-receiver/issues/4#issuecomment-528991114) of the long term plan), but while GMS core releases are still rolling out, Android still needs an [app hash](https://developers.google.com/identity/sms-retriever/verify#computing_your_apps_hash_string) to know which APK it should redirect the SMS to. There is an interesting trick we could do to combine URLs with App Hashes, embedding them as URL parameters (making them valid android SMSes as well as valid web urls, which we can use to derive origins):
 
 ```
 Your OTP is: 123ABC78.
