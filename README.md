@@ -83,7 +83,7 @@ With that, before we go any further, the following are some of the UX alternativ
 
 It is unclear if these formulations are necessarily mutually exclusive, but our intuition at the moment is that some of them are not.
 
-Before we get into API design, from a UX perspective, our initial intuition was that the following was the best we could do:
+Before we get into API design, from a UX perspective, our initial intuition was that, under the right circumstances (e.g. the PWA is installed), the following UX formulation would lead to the highest levels of conversion rates:
 
 <img src="mock2.gif" width="250px">
 
@@ -113,6 +113,8 @@ There are many different UX formulations that are under consideration, with diff
 
 <img src="mock.gif" width="250px">
 
+Now that we established some **users** first UX formulations, lets look into our second constituents, **developers**.
+
 ### Declarative API
 
 The easiest starting point to enable this API is a declarative autocomplete field:
@@ -129,9 +131,7 @@ However, to close the gap with the [tap-less android user experience](#prior-art
 * the autofill permission model
 * the introduction of the concept of one time codes to users
 
-So, working backwards from where we want to be, the declarative autofill API wouldn't allow us to fully close the gap with the kind of experience that you'd find on native apps:
-
-<img src="mock2.gif" width="250px">
+So, working backwards from where we want to be, the declarative autofill API wouldn't allow us to fully close the gap with the kind of experience that you'd find on [native apps](#automatic-ux).
 
 ### Imperative API
 
@@ -150,11 +150,9 @@ try {
 }
 ```
 
-Some corner cases are covered [here](#Spec).
-
 There are a couple of nice side effects of the imperative API.
 
-First, it can offers browser engines a spectrum of mediation / consent / permissions / interventions without any re-activation of the ecosystem (e.g. a [permission-less UX](#automatic-ux), a [non-blocking UX](#unblocking-ux) and an [autofill UX](#autofill-ux))
+First, it can offer browser engines a spectrum of mediation / consent / permissions / interventions without any re-activation of the ecosystem (e.g. a [permission-less UX](#automatic-ux), a [non-blocking UX](#unblocking-ux) and an [autofill UX](#autofill-ux))
 
 Second, it can derive the [declarative API](#Declarative-API) (the opposite isn't true). An interesting implication of uncovering the lower level imperative API is that it can derive the high level declarative API without any loss of (a) browser mediation and (b) graceful degradation.
 
@@ -243,6 +241,10 @@ For: https://code.sgo.to/verify.php?otp=123ABC78&hash=s3LhKBB0M33
 ```
 
 The `For` footer should point at a `HTTPS` or `localhost` URL.
+
+In addition to having the origin match, we define a set of extra parameters which can be used to aid on the comprehension of the UX flow. Specifically:
+
+* a parameter named `otp` which contains the alpha numeric code of the one time password.
 
 ## Security
 
