@@ -1,8 +1,6 @@
 
 # SMS Receiver API
 
-Discussions welcomed [here](https://github.com/samuelgoto/sms-receiver/issues/new).
-
 ## Introduction
 
 Developers use phone numbers for many aspects of building an application:
@@ -97,23 +95,44 @@ There are many different UX formulations that are under consideration, with diff
 
 ##### Automatic UX
 
+The automatic UX formulation ports the user experience you'd find on Android to the Web. 
+
+In this formulation, all of the UX is delegated to the developer: status indicators, intent of the flow, etc. Whenever a browser implementation may find appropriate (e.g. when the PWA is installed, possibly), a browser may chose to share the SMS directly with the developer without any user consent.
+
+Some positives here:
+
+* no user friction / taps necessary
+* no concept of OTP introduced
+
+And the biggest challenge being:
+
+* does it sufficiently protect the user's privacy?
+
 <img src="mock2.gif" width="250px">
-
-##### Unblocking UX
-
-<img src="mock3.png" width="250px">
-
-##### Autofill UX
-
-<img src="mock4.png" width="250px">
-
-##### Opt-In UX
-
-<img src="mock6.gif" width="250px">
 
 ##### Opt-Out UX
 
+A variation of the previous UX that makes sure that the user is aware of what's going on, but still offers zero-tap conversion rates, is what we have been calling an opt-out UI:
+
 <img src="mock.gif" width="250px">
+
+##### Unblocking UX
+
+On occasions where the user agent believes it is necessary to mediate / regulate (e.g. there isn't enough signals of trust established between the user and the origin) and get user consent before sharing the SMS, something like an InfoBar could be used: 
+
+<img src="mock3.png" width="250px">
+
+##### Opt-In UX
+
+A more abrupt / opinionated variation of the latter UX is to use a modal dialog:
+
+<img src="mock6.gif" width="250px">
+
+##### Autofill UX
+
+At the end of the spectrum, the most regulated / mediated UX is the autofill UX, which makes sure that the intent to share is well established by making a suggestion with a keyboard accessory:
+
+<img src="mock4.png" width="250px">
 
 Now that we established some **users** first UX formulations, lets look into our second constituents, **developers**.
 
@@ -127,13 +146,13 @@ The easiest starting point to enable this API is a declarative autocomplete fiel
 
 This has well established distribution and an existing implementation by Safari. It is ergonomically simple (easy to adopt) and effective (reuses the privacy properties of autofill suggestions).
 
-However, to close the gap with the [tap-less android user experience](#prior-art), the declarative API ties ourselves to:
+While this doesn't seem at first **mutually exclusive** (and may be, in effect, collectively constructive), to close the gap with the [tap-less android user experience](#prior-art), the declarative API ties ourselves to:
 
 * form elements
 * the autofill permission model
 * the introduction of the concept of one time codes to users
 
-So, working backwards from where we want to be, the declarative autofill API wouldn't allow us to fully close the gap with the kind of experience that you'd find on [native apps](#automatic-ux).
+So, working backwards from where we believe we want to be, the declarative autofill API wouldn't allow us to fully close the gap with the kind of experience that you'd find on [native apps](#automatic-ux).
 
 ### Imperative API
 
