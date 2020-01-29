@@ -1,6 +1,22 @@
 
 # SMS Receiver API
 
+## TL;DR;
+
+This a proposal for (a) a client side javascript API that provides access to OTPs delivered via SMS and (b) a server side formatting convention that enables browsers to route SMSes to origins. Here is what the client side API looks like:
+
+```javascript
+let {otp} = await navigator.credentials.get({otp: true});
+```
+
+And here is the server side formatting convention:
+
+```
+Your verification code is: 123ABC78
+
+@example.com #123ABC78
+```
+
 ## Introduction
 
 Developers use phone numbers for many aspects of building an application:
