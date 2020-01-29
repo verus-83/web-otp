@@ -176,12 +176,12 @@ So, working backwards from where we believe we want to be, the declarative autof
 In this formulation, browsers provide an imperative API to request the contents of an incoming SMS. Here is one possible formulation / shape, based on Android’s [SMS Retriever API](https://developers.google.com/identity/sms-retriever/overview): 
 
 ```javascript
-if (navigator.credentials) {
+if (window.OTPCredential) {
   alert("feature not available :(");
   return;
 }
 try {
-  let {otp} = await navigator.credentials.receive();
+  let {otp} = await navigator.credentials.get({otp: true});
   alert("otp received! " + otp);
 } catch (e) {
   alert("timed out!");
