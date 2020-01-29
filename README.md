@@ -1,9 +1,11 @@
 
-# SMS Receiver API
+# Web OTPs
 
 ## TL;DR;
 
-This a proposal for (a) a client side javascript API that provides access to OTPs delivered via SMS and (b) a server side formatting convention that enables browsers to route SMSes to origins. Here is what the client side API looks like:
+Many web sites rely on verifying phone numbers via sending one-time-passwords via SMS, which instructs users to copy/paste it into the website.
+
+This a proposal for (a) a client side javascript API that enables web sites to request OTPs and (b) a server side formatting convention that enables browsers to route SMSes to them. Here is what the client side API looks like:
 
 ```javascript
 let {otp} = await navigator.credentials.get({otp: true});
@@ -166,7 +168,6 @@ While this doesn't seem at first **mutually exclusive** (and may be, in effect, 
 
 * form elements
 * the autofill permission model
-* the introduction of the concept of one time codes to users
 
 So, working backwards from where we believe we want to be, the declarative autofill API wouldn't allow us to fully close the gap with the kind of experience that you'd find on [native apps](#automatic-ux).
 
@@ -175,15 +176,15 @@ So, working backwards from where we believe we want to be, the declarative autof
 In this formulation, browsers provide an imperative API to request the contents of an incoming SMS. Here is one possible formulation / shape, based on Android’s [SMS Retriever API](https://developers.google.com/identity/sms-retriever/overview): 
 
 ```javascript
-if (navigator.sms) {
+if (navigator.credentials) {
   alert("feature not available :(");
   return;
 }
 try {
-  let {content} = await navigator.sms.receive();
-  alert("sms received! " + content);
+  let {otp} = await navigator.credentials.receive();
+  alert("otp received! " + otp);
 } catch (e) {
-  alert("time out!");
+  alert("timed out!");
 }
 ```
 
@@ -197,47 +198,31 @@ Here is an example of a custom element that can be embedded in pages to polyfill
 
 ```javascript
 /**
- *  <sms-receiver> is a custom element that extends <input> elements
+ *  one-time-code is a custom element that extends <input> elements
  *  with an autocomplete="one-time-code" with the imperative
- *  navigator.sms.receive() API. Submits the form when it receives
- *  the SMS.
+ *  navigator.credentials.get({otp: true}) API. Submits the form when it
+ * receives the SMS.
  * 
  *  Example:
  *
  *  <form>
- *    <input is="sms-receiver" 
- *           name="otp" 
- *           regex="\s([A-Za-z0-9]{6})\." 
- *           autocomplete="one-time-code" 
- *           placeholder="Code (6 digits)" 
- *           required />
+ *    <input is="one-time-code" required />
  *    <input type="submit" />
  *  </form>
- *
- *  Parameters:
- *
- *    - regex: a regular expression used to parse the contents of the
- *             sms message and get the OTP code.
- *
  *
  *  Degrades gracefully to the autofill UI or manual input when the
  *  API is not available.
  *
  */
-customElements.define("sms-receiver",
+customElements.define("one-time-code",
   class extends HTMLInputElement {
     connectedCallback() {
       this.receive();
     }
     async receive() {
       try {
-        let {content} = await navigator.sms.receive();
-        let regex = this.getAttribute("regex");
-        let code = new RegExp(regex).exec(content);
-        if (!code) {
-          return;
-        }
-        this.value = code[1];
+        let {otp} = await navigator.credentials.get({otp: true});
+        this.value = otp;
         this.form.submit();
       } catch (e) {
         console.log(e);
@@ -258,30 +243,17 @@ In this proposal, to support the isolation between different origins (without ex
 
 ```
 Your OTP is: 123ABC78.
-For: https://example.com
+@example.com: #123ABC78
 ```
 
 Long term, we expect the formatting to be browser agnostic ([current formulation](https://github.com/samuelgoto/sms-receiver/issues/4#issuecomment-528991114) of the long term plan), but while GMS core releases are still rolling out, Android still needs an [app hash](https://developers.google.com/identity/sms-retriever/verify#computing_your_apps_hash_string) to know which APK it should redirect the SMS to. There is an interesting trick we could do to combine URLs with App Hashes, embedding them as URL parameters (making them valid android SMSes as well as valid web urls, which we can use to derive origins):
 
 ```
 Your OTP is: 123ABC78.
-For: https://code.sgo.to?hash=s3LhKBB0M33
+@code.sgo.to #123ABC78 ^s3LhKBB0M33
 ```
 
-In this formulation, the last few characters (e.g. `s3LhKBB0M33`) are used to route the SMS from Android to the Browser APK and the origin is used to route from the Browser process to the right requesting tab. 
-
-Another nice side effect of this formulation is that the URL could be used as a fallback mechanism in case anything fails (e.g. poor mobile network reception leads to an SMS being delivered many hours/days later).
-
-```
-Your OTP is: 123ABC78.
-For: https://code.sgo.to/verify.php?otp=123ABC78&hash=s3LhKBB0M33
-```
-
-The `For` footer should point at a `HTTPS` or `localhost` URL.
-
-In addition to having the origin match, we define a set of extra parameters which can be used to aid on the comprehension of the UX flow. Specifically:
-
-* a parameter named `otp` which contains the alpha numeric code of the one time password.
+In this formulation, the last few characters (e.g. `^s3LhKBB0M33`) are used to route the SMS from Android to the Browser APK and the origin is used to route from the Browser process to the right requesting tab. 
 
 ## Security
 
@@ -360,22 +332,12 @@ This could be implemented by having developer interact with identity providers (
 
 Several identity providers such as Facebook (Account Kit), Truecaller, and others already provide APIs like this verified phone numbers.
 
-#### OTP Retrieval API
-
-Provide a higher level API for obtaining OTP, which could be provided by a variety of transport mechanisms (email, time-based authenticator apps running on the device, not just SMS)
-
-```
-// This is just a draft/example of what a API could look like.
-let otp = await navigator.credentials.get({otp: true});
-verify(otp);
-```
-
 ### Spec
 
 There are a couple of alternatives that we considered from an API shape perspective. First, subclassing `EventTarget`:
 
 ```javascript
-let receiver = new SMSReceiver();
+let receiver = new OTPReceiver();
 receiver.addEventListener("receive", ({content}) => {
   console.log(content);
 });
@@ -387,7 +349,7 @@ But it seemed awkward since this is a one-shot event.
 The other formulation that we think is worth noting is to use a static method outside of `navigator`. Example:
 
 ```javascript
-let {content} = SMSReceiver.receive();
+let {content} = OTPReceiver.receive();
 ```
 
 This could work equally well compared to `navigator.sms.receive()`, but would pollute the global namespace rather than the `navigator` namespace.
