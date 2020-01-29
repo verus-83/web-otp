@@ -369,3 +369,7 @@ try {
   // deal with errors
 }
 ```
+
+# Acknowledgements
+
+This is a write down of a variety of ideas coming from huge amount of people, in no particular order: @sso-google, @ayuishii, @agektmr, @slightlyoff, @reillyeon, @inexorabletash and @rmondello and team.
