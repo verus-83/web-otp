@@ -95,8 +95,31 @@ try {
 ```
 </div>
 
+
 <!-- ============================================================ -->
-## Custom Elements ## {#web-components}
+## Aborting requests ## {#intro-abort}
+<!-- ============================================================ -->
+
+<div class=example>
+Fetching an OTP:
+
+```js
+let signal = new AbortController();
+setTimeout(() => {
+  // abort after two minutes
+  signal.abort();
+}, 2 * 60 * 1000);
+  
+try {
+  let {content} = await navigator.credentials.get({otp: true, abort: signal});
+} catch (e) {
+  // deal with errors
+}
+```
+</div>
+
+<!-- ============================================================ -->
+## Web Components ## {#intro-wc}
 <!-- ============================================================ -->
 
 Here is an example of how to annotate an input field declaratively to receive an OTP:

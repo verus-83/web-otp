@@ -1225,7 +1225,7 @@ Possible extra rowspan handling
   <meta content="Bikeshed version 8bc2fccb49a45a0af18c5e75ce18049d75f824b6" name="generator">
   <link href="http://samuelgoto.github.io/WebOTP" rel="canonical">
   <link href="logo-cookies.png" rel="icon">
-  <meta content="97a89e25b34ced963fffa636728b27a035f299f6" name="document-revision">
+  <meta content="159f32f0c2c72013e26a1b04d662eff1ec0ad0da" name="document-revision">
 <style>
 dl.domintro dt {
     font-family: Menlo, Consolas, "DejaVu Sans Mono", Monaco, monospace;
@@ -1528,7 +1528,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <ol class="toc">
       <li><a href="#intro-summary"><span class="secno">1.1</span> <span class="content">Summary</span></a>
       <li><a href="#intro-fetch"><span class="secno">1.2</span> <span class="content">Fetching OTPs</span></a>
-      <li><a href="#web-components"><span class="secno">1.3</span> <span class="content">Custom Elements</span></a>
+      <li><a href="#intro-abort"><span class="secno">1.3</span> <span class="content">Aborting requests</span></a>
+      <li><a href="#intro-wc"><span class="secno">1.4</span> <span class="content">Web Components</span></a>
      </ol>
     <li>
      <a href="#concepts"><span class="secno">2</span> <span class="content">Concepts</span></a>
@@ -1589,7 +1590,23 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
 <c- p>}</c->
 </pre>
    </div>
-   <h3 class="heading settled" data-level="1.3" id="web-components"><span class="secno">1.3. </span><span class="content">Custom Elements</span><a class="self-link" href="#web-components"></a></h3>
+   <h3 class="heading settled" data-level="1.3" id="intro-abort"><span class="secno">1.3. </span><span class="content">Aborting requests</span><a class="self-link" href="#intro-abort"></a></h3>
+   <div class="example" id="example-1f17d32f">
+    <a class="self-link" href="#example-1f17d32f"></a> Fetching an OTP: 
+<pre class="language-js highlight"><c- a>let</c-> signal <c- o>=</c-> <c- k>new</c-> AbortController<c- p>();</c->
+setTimeout<c- p>(()</c-> <c- p>=></c-> <c- p>{</c->
+  <c- c1>// abort after two minutes</c->
+  signal<c- p>.</c->abort<c- p>();</c->
+<c- p>},</c-> <c- mi>2</c-> <c- o>*</c-> <c- mi>60</c-> <c- o>*</c-> <c- mi>1000</c-><c- p>);</c->
+  
+<c- k>try</c-> <c- p>{</c->
+  <c- a>let</c-> <c- p>{</c->content<c- p>}</c-> <c- o>=</c-> await navigator<c- p>.</c->credentials<c- p>.</c->get<c- p>({</c->otp<c- o>:</c-> <c- kc>true</c-><c- p>,</c-> abort<c- o>:</c-> signal<c- p>});</c->
+<c- p>}</c-> <c- k>catch</c-> <c- p>(</c->e<c- p>)</c-> <c- p>{</c->
+  <c- c1>// deal with errors</c->
+<c- p>}</c->
+</pre>
+   </div>
+   <h3 class="heading settled" data-level="1.4" id="intro-wc"><span class="secno">1.4. </span><span class="content">Web Components</span><a class="self-link" href="#intro-wc"></a></h3>
    <p>Here is an example of how to annotate an input field declaratively to receive an OTP:</p>
    <div class="example" id="example-dfeb4a55">
     <a class="self-link" href="#example-dfeb4a55"></a> Web Component Polyfills 
