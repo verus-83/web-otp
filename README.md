@@ -1,5 +1,5 @@
 
-# Web OTPs
+# Web OTP
 
 ## TL;DR;
 
