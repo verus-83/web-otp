@@ -2,7 +2,7 @@
 Title: Web OTP API
 Shortname: webotp
 Level: 1
-Status: CG-DRAFT
+Status: DREAM
 ED: http://samuelgoto.github.io/WebOTP
 Repository: samuelgoto/WebOTP
 Editor: Sam Goto, Google Inc. https://google.com, goto@google.com
