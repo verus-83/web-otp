@@ -8,7 +8,9 @@ Many web sites rely on verifying phone numbers via sending one-time-passwords vi
 This a proposal for (a) a client side javascript API that enables web sites to request OTPs and (b) a server side formatting convention that enables browsers to route SMSes to them. Here is what the client side API looks like:
 
 ```javascript
-let {otp} = await navigator.credentials.get({otp: true});
+let {id, type} = await navigator.credentials.get({otp: {transport: ["sms"]}});
+// id == "123ABC78"
+// type == "otp"
 ```
 
 And here is the server side formatting convention:
@@ -181,8 +183,8 @@ if (window.OTPCredential) {
   return;
 }
 try {
-  let {otp} = await navigator.credentials.get({otp: true});
-  alert("otp received! " + otp);
+  let {id} = await navigator.credentials.get({otp: {transport: ["sms"]});
+  alert("otp received! " + id);
 } catch (e) {
   alert("timed out!");
 }
@@ -200,8 +202,8 @@ Here is an example of a custom element that can be embedded in pages to polyfill
 /**
  *  one-time-code is a custom element that extends <input> elements
  *  with an autocomplete="one-time-code" with the imperative
- *  navigator.credentials.get({otp: true}) API. Submits the form when it
- * receives the SMS.
+ *  navigator.credentials.get({otp: {transport: ["sms"]}) API.
+ *  Submits the form when it receives the SMS.
  * 
  *  Example:
  *
@@ -221,8 +223,8 @@ customElements.define("one-time-code",
     }
     async receive() {
       try {
-        let {otp} = await navigator.credentials.get({otp: true});
-        this.value = otp;
+        let {id} = await navigator.credentials.get({otp: {transport: ["sms"]}});
+        this.value = id;
         this.form.submit();
       } catch (e) {
         console.log(e);
