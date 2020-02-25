@@ -8,8 +8,8 @@ Many web sites rely on verifying phone numbers via sending one-time-passwords vi
 This a proposal for (a) a client side javascript API that enables web sites to request OTPs and (b) a server side formatting convention that enables browsers to route SMSes to them. Here is what the client side API looks like:
 
 ```javascript
-let {id, type} = await navigator.credentials.get({otp: {transport: ["sms"]}});
-// id == "123ABC78"
+let {code, type} = await navigator.credentials.get({otp: {transport: ["sms"]}});
+// code == "123ABC78"
 // type == "otp"
 ```
 
@@ -183,8 +183,8 @@ if (window.OTPCredential) {
   return;
 }
 try {
-  let {id} = await navigator.credentials.get({otp: {transport: ["sms"]});
-  alert("otp received! " + id);
+  let {code} = await navigator.credentials.get({otp: {transport: ["sms"]});
+  alert("otp received! " + code);
 } catch (e) {
   alert("timed out!");
 }
@@ -223,8 +223,8 @@ customElements.define("one-time-code",
     }
     async receive() {
       try {
-        let {id} = await navigator.credentials.get({otp: {transport: ["sms"]}});
-        this.value = id;
+        let {code} = await navigator.credentials.get({otp: {transport: ["sms"]}});
+        this.value = code;
         this.form.submit();
       } catch (e) {
         console.log(e);
