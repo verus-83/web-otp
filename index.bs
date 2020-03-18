@@ -246,23 +246,19 @@ Your verification code is: 123ABC78
 ```
 </div>
 
-
-<!-- ============================================================ -->
-# Concepts # {#concepts}
-<!-- ============================================================ -->
-
-<!-- ============================================================ -->
-## OTPCredential ## {#otp-concept}
-<!-- ============================================================ -->
-
 <!-- ============================================================ -->
 # The {{OTPCredential}} Interface # {#OTPCredential}
 <!-- ============================================================ -->
 
+The OTPCredential interface represents a one time password that is
+returned as a result of the credential management request. The code
+attribute contains the programatically readable OTP that was passed
+as well as the value "otp" as the "type".
+
 <xmp class=idl>
-[Exposed=(ServiceWorker,Window),
- SecureContext]
-interface OTPCredential : EventTarget {
+[Exposed=Window, SecureContext]
+interface OTPCredential : Credential {
+    readonly attribute DOMString code;
 };
 </xmp>
 
