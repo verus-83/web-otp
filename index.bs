@@ -224,44 +224,11 @@ let {code, type} = await navigator.credentials.get({
 </div>
 
 <!-- ============================================================ -->
-# Transports # {#transports}
+# WebOTP API # {#API}
 <!-- ============================================================ -->
 
-We expect a variety of different transport mechanisms to enable OTPs
-to be received, most notably via SMS, email and hardware devices.
-
-Each of these transport mechanisms will need their own conventions on
-how to provide OTPs to the browser.
-
-In this draft, we start explicitly specifying how SMS OTPs can be
-delivered to browsers, but we leave the API surface to be extensible
-to other transports.
-
 <!-- ============================================================ -->
-## SMS ## {#transports-sms}
-<!-- ============================================================ -->
-
-One of the most commonly used transport mechanisms for OTP is via
-SMS messages, allowing developers to verify phone numbers. They
-are typically sent embedded in an SMS message, which gets copied and
-pasted by users.
-
-What follows is a definition of a machine-readable formatting convention
-that servers can use to send SMS messages that browsers can intercept
-and route securely to the right origin.
-
-Here is an example of such convention:
-
-<div class=example>
-```
-Your verification code is: 123ABC78
-
-@example.com #123ABC78
-```
-</div>
-
-<!-- ============================================================ -->
-# <dfn interface>OTPCredential</dfn> Interface # {#OTPCredential}
+## <dfn interface>OTPCredential</dfn> Interface ## {#OTPCredential}
 <!-- ============================================================ -->
 
 The {{OTPCredential}} interface extends {{Credential}} and contains
@@ -287,6 +254,56 @@ interface OTPCredential : Credential {
     ::  The retrieved one time password. 
 
 </dl>
+
+<!-- ============================================================ -->
+### `CredentialRequestOptions` Dictionary Extension ### {#sctn-credentialrequestoptions-extension}
+<!-- ============================================================ -->
+
+To support obtaining assertions via {{CredentialsContainer/get()|navigator.credentials.get()}}, this document extends the
+{{CredentialRequestOptions}} dictionary as follows:
+
+<xmp class="idl">
+    partial dictionary CredentialRequestOptions {
+        PublicKeyCredentialRequestOptions publicKey;
+    };
+</xmp>
+
+<!-- ============================================================ -->
+## Transports ## {#transports}
+<!-- ============================================================ -->
+
+We expect a variety of different transport mechanisms to enable OTPs
+to be received, most notably via SMS, email and hardware devices.
+
+Each of these transport mechanisms will need their own conventions on
+how to provide OTPs to the browser.
+
+In this draft, we start explicitly specifying how SMS OTPs can be
+delivered to browsers, but we leave the API surface to be extensible
+to other transports.
+
+<!-- ============================================================ -->
+### SMS ### {#transports-sms}
+<!-- ============================================================ -->
+
+One of the most commonly used transport mechanisms for OTP is via
+SMS messages, allowing developers to verify phone numbers. They
+are typically sent embedded in an SMS message, which gets copied and
+pasted by users.
+
+What follows is a definition of a machine-readable formatting convention
+that servers can use to send SMS messages that browsers can intercept
+and route securely to the right origin.
+
+Here is an example of such convention:
+
+<div class=example>
+```
+Your verification code is: 123ABC78
+
+@example.com #123ABC78
+```
+</div>
 
 <!-- ============================================================ -->
 # Security # {#security}
