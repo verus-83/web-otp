@@ -2,11 +2,12 @@
 Title: Web OTP API
 Shortname: webotp
 Level: 1
-Status: DREAM
-ED: http://samuelgoto.github.io/WebOTP
-Repository: samuelgoto/WebOTP
+Status: CG-DRAFT
+Group: WICG
+ED: http://wicg.github.io/WebOTP
+Repository: WICG/WebOTP
 Editor: Sam Goto, Google Inc. https://google.com, goto@google.com
-Favicon: logo-cookies.png
+Favicon: logo-otp.png
 Markup Shorthands: markdown yes, css no, biblio yes
 Abstract: A Javascript API to request one time passwords for verifying credentials (e.g. phone numbers, emails).
 Test Suite: https://github.com/web-platform-tests/wpt/tree/master/sms
@@ -39,6 +40,9 @@ dl.domintro dt code {
     font-size: inherit;
 }
 </style>
+
+<img src="logo-otp.svg" alt="logo"
+    style="height: 100px; width: 100px; position: absolute; right: 20px; top: 30px;">
 
 <!-- ============================================================ -->
 # Introduction # {#intro}
