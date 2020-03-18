@@ -313,7 +313,7 @@ OTP.
 </div>
 
 <!-- ============================================================ -->
-# Transports # {#transports}
+# Server Side API # {#transports}
 <!-- ============================================================ -->
 
 We expect a variety of different transport mechanisms to enable OTPs
