@@ -1225,7 +1225,7 @@ Possible extra rowspan handling
   <meta content="Bikeshed version 8c5cd69b2db6b377093f1f5e0c00b44e6d9e986b" name="generator">
   <link href="http://wicg.github.io/WebOTP" rel="canonical">
   <link href="logo-otp.png" rel="icon">
-  <meta content="1e75ebdb0ec64fb8812767f63c047e6282791cca" name="document-revision">
+  <meta content="05407fb0e54f19e9bdef490f1d55cfdcf0329eb1" name="document-revision">
 <style>
 dl.domintro dt {
     font-family: Menlo, Consolas, "DejaVu Sans Mono", Monaco, monospace;
@@ -1570,10 +1570,22 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p><img alt="logo" src="logo-otp.svg" style="height: 100px; width: 100px; position: absolute; right: 20px; top: 30px;"></p>
    <h2 class="heading settled" data-level="1" id="intro"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#intro"></a></h2>
    <p><em>This section is non-normative.</em></p>
-   <p>Many web sites need to verify credentials (e.g. phone numbers and email addresses) as part of their authentication flows. They currently rely on sending one-time-passwords to these communication channels to be used as proof of ownership. The one-time-password is manually handed back by the user (typically by copying/pasting) to the web app which is onerous and erroneous.</p>
-   <p>This a proposal for a client side javascript API that enables web sites to request OTPs and a set of transport-specific conventions (we start with SMS while leaving the door open to others) that can be used in coordination with browsers.</p>
+   <p>Many web sites need to verify credentials (e.g. phone numbers and
+email addresses) as part of their authentication flows. They currently
+rely on sending one-time-passwords to these communication channels to
+be used as proof of ownership. The one-time-password is manually
+handed back by the user (typically by copying/pasting) to the web app
+which is onerous and erroneous.</p>
+   <p>This a proposal for a client side javascript API that enables web
+sites to request OTPs and a set of transport-specific conventions (we
+start with SMS while leaving the door open to others) that can be used
+in coordination with browsers.</p>
    <h3 class="heading settled" data-level="1.1" id="intro-client"><span class="secno">1.1. </span><span class="content">The client side API</span><a class="self-link" href="#intro-client"></a></h3>
-   <p>Here is what the client side API looks like.</p>
+   <p>In this proposal, websites have the ability to call a browser API to
+request OTPs coming from specific transports (e.g. via SMS).</p>
+   <p>The browser intermediates the receipt of the SMS and the handing off
+to the calling website (typically asking for the user’s consent), so
+the API returns a promise asynchronously.</p>
    <div class="example" id="example-ca9b1fd1">
     <a class="self-link" href="#example-ca9b1fd1"></a> 
 <pre class="language-js highlight"><c- a>let</c-> <c- p>{</c->code<c- p>,</c-> type<c- p>}</c-> <c- o>=</c-> await navigator<c- p>.</c->credentials<c- p>.</c->get<c- p>({</c->
@@ -1584,8 +1596,15 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
 </pre>
    </div>
    <h3 class="heading settled" data-level="1.2" id="intro-server"><span class="secno">1.2. </span><span class="content">The server side API</span><a class="self-link" href="#intro-server"></a></h3>
-   <p>A server side formatting convention that enables browsers to route SMSes to them is provided too, and we make an effort to enable other methods of delivery to be defined in the future (e.g. email, pluggable devices, etc).</p>
-   <p>And here is the server side formatting convention for SMS messages look like:</p>
+   <p>Once the client side API is called, the website’s server can send
+OTPs to the client via the requested transport mechanisms. For each
+of these transport mechanism, a server side convention is set in
+place to guarantee that the OTP is delivered safely and
+programatically.</p>
+   <p>For SMS, for example, an SMS formatting convention is established to
+allow agents to get programatic access to the otherwise human-readable
+SMS. This specific convention gives agents access to (a) the OTP and
+(b) the intended origin destination of the message:</p>
    <div class="example" id="example-7552cff1">
     <a class="self-link" href="#example-7552cff1"></a> 
 <pre>Your verification code is: 123ABC78
@@ -1594,6 +1613,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
 </pre>
    </div>
    <h3 class="heading settled" data-level="1.3" id="intro-feature-detection"><span class="secno">1.3. </span><span class="content">Feature Detection</span><a class="self-link" href="#intro-feature-detection"></a></h3>
+   <p>Not all user agents necessarily need to implement the WebOTP API at
+the exact same moment in time, so websites need a mechanism to detect
+if the API is available.</p>
+   <p>Websites can check for the presence of the OTPCredential global
+interface:</p>
    <div class="example" id="example-41ef25d5">
     <a class="self-link" href="#example-41ef25d5"></a> 
 <pre class="language-js highlight"><c- k>if</c-> <c- p>(</c-><c- o>!</c->window<c- p>.</c->OTPCredential<c- p>)</c-> <c- p>{</c->
@@ -1603,16 +1627,28 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
 </pre>
    </div>
    <h3 class="heading settled" data-level="1.4" id="intro-wc"><span class="secno">1.4. </span><span class="content">Web Components</span><a class="self-link" href="#intro-wc"></a></h3>
-   <p>Here is an example of how to annotate an input field declaratively to receive an OTP:</p>
-   <div class="example" id="example-dfeb4a55">
-    <a class="self-link" href="#example-dfeb4a55"></a> Web Component Polyfills 
-<pre class="language-html highlight"><c- p>&lt;</c-><c- f>form</c-><c- p>></c->
+   <p>For the most part, OTP verification largely relies on:</p>
+   <ul>
+    <li data-md>
+     <p>input, forms and copy/paste, on the client side and</p>
+    <li data-md>
+     <p>third party frameworks to send SMS, on the server side.</p>
+   </ul>
+   <p>We expect some of these frameworks to develop declarative versions of
+this API to facilitate the deployment of their customer’s existing
+code.</p>
+   <div class="example" id="example-6cbc72d5">
+    <a class="self-link" href="#example-6cbc72d5"></a> Web Component Polyfills 
+<pre class="language-html highlight"><c- p>&lt;</c-><c- f>script</c-> <c- e>src</c-><c- o>=</c-><c- s>"sms-sdk.js"</c-><c- p>>&lt;/</c-><c- f>script</c-><c- p>></c->
+
+<c- p>&lt;</c-><c- f>form</c-><c- p>></c->
   <c- p>&lt;</c-><c- f>input</c-> <c- e>is</c-><c- o>=</c-><c- s>"one-time-code"</c-> <c- e>required</c-> <c- p>/></c->
   <c- p>&lt;</c-><c- f>input</c-> <c- e>type</c-><c- o>=</c-><c- s>"submit"</c-> <c- p>/></c->
 <c- p>&lt;/</c-><c- f>form</c-><c- p>></c->
 </pre>
    </div>
-   <p>And here is an example of how a framework could implement it using web components:</p>
+   <p>And here is an example of how a framework could implement it
+using web components:</p>
    <div class="example" id="example-b58563d9">
     <a class="self-link" href="#example-b58563d9"></a> Web Component Polyfills 
 <pre class="language-js highlight">customElements<c- p>.</c->define<c- p>(</c-><c- u>"one-time-code"</c-><c- p>,</c->
@@ -1635,8 +1671,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
 </pre>
    </div>
    <h3 class="heading settled" data-level="1.5" id="intro-abort"><span class="secno">1.5. </span><span class="content">Abort API</span><a class="self-link" href="#intro-abort"></a></h3>
-   <div class="example" id="example-9a132865">
-    <a class="self-link" href="#example-9a132865"></a> Fetching an OTP: 
+   <p>Many modern websites handle navigations on the client side. So, if a
+user navigates away from an OTP flow to another flow, the request
+needs to be cancelled so that the user isn’t bothered with a
+permission prompt that isn’t relevant anymore.</p>
+   <p>To facilitate that, an abort controller can be passed to abort the
+request:</p>
+   <div class="example" id="example-26e0dca4">
+    <a class="self-link" href="#example-26e0dca4"></a> 
 <pre class="language-js highlight"><c- a>let</c-> signal <c- o>=</c-> <c- k>new</c-> AbortController<c- p>();</c->
 
 setTimeout<c- p>(()</c-> <c- p>=></c-> <c- p>{</c->
@@ -1657,7 +1699,9 @@ setTimeout<c- p>(()</c-> <c- p>=></c-> <c- p>{</c->
 to be received, most notably via SMS, email and hardware devices.</p>
    <p>Each of these transport mechanisms will need their own conventions on
 how to provide OTPs to the browser.</p>
-   <p>In this draft, we document how SMS OTPs can be delivered to browsers.</p>
+   <p>In this draft, we start explicitly specifying how SMS OTPs can be
+delivered to browsers, but we leave the API surface to be extensible
+to other transports.</p>
    <h3 class="heading settled" data-level="2.1" id="transports-sms"><span class="secno">2.1. </span><span class="content">SMS</span><a class="self-link" href="#transports-sms"></a></h3>
    <p>One of the most commonly used transport mechanisms for OTP is via
 SMS messages, allowing developers to verify phone numbers. They
@@ -1683,10 +1727,12 @@ and route securely to the right origin.</p>
 };
 </pre>
    <h2 class="heading settled" data-level="5" id="security"><span class="secno">5. </span><span class="content">Security</span><a class="self-link" href="#security"></a></h2>
-   <p>From a security perspective, there are two considerations with this API:</p>
+   <p>From a security perspective, there are two considerations with this
+API:</p>
    <ul>
     <li data-md>
-     <p>addressing: preventing crossing an origin boundary between the sending and the receiving of OTPs.</p>
+     <p>addressing: preventing crossing an origin boundary between the
+  sending and the receiving of OTPs.</p>
     <li data-md>
      <p>tampering: preventing attacks based on the modification of the message.</p>
    </ul>
@@ -1698,11 +1744,23 @@ and route securely to the right origin.</p>
     <li data-md>
      <p>https (or localhost, for development purposes)</p>
    </ul>
-   <p>This API is also only available on top level frames, to avoid abuse by third party iframes / libraries. It could be made available to inner frames when the origin match, but we haven’t yet found a concrete requirement / demand for this feature, so we keep it more constrained for the moment.</p>
-   <p>This API is also only available via https or localhost (for development purposes). We don’t entirely adopt the concept of trustworthy urls because it covers more schemes (e.g. data://123) than we would like to (our initial intuition is that (a) https and localhost covers most cases and (b) it needs to be clear to the user what public facing entity its sending the SMS).</p>
+   <p>This API is also only available on top level frames, to avoid abuse by
+third party iframes / libraries. It could be made available to inner
+frames when the origin match, but we haven’t yet found a concrete
+requirement / demand for this feature, so we keep it more constrained
+for the moment.</p>
+   <p>This API is also only available via https or localhost (for development
+purposes). We don’t entirely adopt the concept of trustworthy urls
+because it covers more schemes (e.g. data://123) than we would like to
+(our initial intuition is that (a) https and localhost covers most
+cases and (b) it needs to be clear to the user what public facing
+entity its sending the SMS).</p>
    <h3 class="heading settled" data-level="5.2" id="security-addressing"><span class="secno">5.2. </span><span class="content">Addressing</span><a class="self-link" href="#security-addressing"></a></h3>
-   <p>Each transport mechanism is responsible for guaranteeing that the browser has enough information to route the OTP appropriately to the intended origin.</p>
-   <p>For SMS, for example, the addressing scheme explicitly names the intented origin (in this case, example.com):</p>
+   <p>Each transport mechanism is responsible for guaranteeing that the
+browser has enough information to route the OTP appropriately to the
+intended origin.</p>
+   <p>For SMS, for example, the addressing scheme explicitly names the
+intented origin (in this case, example.com):</p>
    <div class="example" id="example-7552cff1②">
     <a class="self-link" href="#example-7552cff1②"></a> 
 <pre>Your verification code is: 123ABC78
@@ -1710,9 +1768,13 @@ and route securely to the right origin.</p>
 @example.com #123ABC78
 </pre>
    </div>
-   <p>The addressing scheme must be enforced by the agent to guarantee that it gets routed appropriately.</p>
+   <p>The addressing scheme must be enforced by the agent to guarantee that
+it gets routed appropriately.</p>
    <h3 class="heading settled" data-level="5.3" id="security-tampering"><span class="secno">5.3. </span><span class="content">Tampering</span><a class="self-link" href="#security-tampering"></a></h3>
-   <p>There isn’t any built-in cryptographic guarantee that the OTP that is being handed back by this API hasn’t been tampered with. For example, an attacker could send an SMS to the user’s phone with an arbitrary origin which the agent happilly passes back to the requesting call.</p>
+   <p>There isn’t any built-in cryptographic guarantee that the OTP that is
+being handed back by this API hasn’t been tampered with. For example,
+an attacker could send an SMS to the user’s phone with an arbitrary
+origin which the agent happilly passes back to the requesting call.</p>
    <div class="example" id="example-2de70cc1">
     <a class="self-link" href="#example-2de70cc1"></a> 
 <pre>Your verification code is: MUAHAHAHA
@@ -1723,7 +1785,8 @@ and route securely to the right origin.</p>
    <p>It is the responsibility for the caller to:</p>
    <ul>
     <li data-md>
-     <p>put in place the checks necessary to verify that the OTP that was received is a valid one (e.g. store OTPs that were sent on a server side database).</p>
+     <p>put in place the checks necessary to verify that the OTP that was received
+  is a valid one (e.g. store OTPs that were sent on a server side database).</p>
     <li data-md>
      <p>degrade gracefully when an invalid OTP is received (e.g. re-request one).</p>
    </ul>
