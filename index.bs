@@ -380,8 +380,41 @@ Your verification code is: MUAHAHAHA
 It is the responsibility for the caller to:
 
 * put in place the checks necessary to verify that the OTP that was received
-  is a valid one (e.g. store OTPs that were sent on a server side database).
+  is a valid one, for example:
+    * parsing it carefully according to its known formatting expectations
+    (e.g. only alpha numeric values),
+    * storing and checking OTPs that were sent on a server side database.
 * degrade gracefully when an invalid OTP is received (e.g. re-request one).
+
+<!-- ============================================================ -->
+# Privacy # {#privacy}
+<!-- ============================================================ -->
+
+From a privacy perspective, the most notable consideration is for a user agent
+to enforce the consensual exchange of information between the user and the
+website.
+
+Specifically, this API allows the programatic verification of personally
+identifiable attributes of the user, for example email addresses and phone
+numbers.
+
+The attack vector that is most frequently raised is a targetted attack:
+websites trying to find a **very** specific user accross all of its user
+base. In this attack, if left unattended, a website can use this API to
+try to find a **specific** user that owns a **specific** phone number by
+sending all / some (depending on the confidence level) of its users an
+SMS and detecting when one is received. 
+
+Notably, this API doesn't help with the **acquisition** of the personal
+information, but rather with its **verification**. That is, this API helps
+**verifying** whether the user owns a specific phone number, but doesn't
+help acquiring the phone number in the first place (it assumes that the
+website already has access to it).
+
+Nonetheless, The verification of the possession of these attributes is extra
+information about the user and should be handled responsibly by a user
+agent, typically via **permission prompts** before handing back the OTP
+to the website.
 
 <!-- ====================================================================== -->
 # Acknowledgements # {#acknowledgements}
