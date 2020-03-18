@@ -1225,7 +1225,7 @@ Possible extra rowspan handling
   <meta content="Bikeshed version 8c5cd69b2db6b377093f1f5e0c00b44e6d9e986b" name="generator">
   <link href="http://wicg.github.io/WebOTP" rel="canonical">
   <link href="logo-otp.png" rel="icon">
-  <meta content="1e610b476dce87920ff61b65fd4f6a3b1dde0cad" name="document-revision">
+  <meta content="1e75ebdb0ec64fb8812767f63c047e6282791cca" name="document-revision">
 <style>
 dl.domintro dt {
     font-family: Menlo, Consolas, "DejaVu Sans Mono", Monaco, monospace;
@@ -1543,9 +1543,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <li><a href="#otp-concept"><span class="secno">3.1</span> <span class="content">OTPCredential</span></a>
      </ol>
     <li><a href="#OTPCredential"><span class="secno">4</span> <span class="content">The <code class="idl"><span>OTPCredential</span></code> Interface</span></a>
-    <li><a href="#globals"><span class="secno">5</span> <span class="content">Global Interfaces</span></a>
-    <li><a href="#security"><span class="secno">6</span> <span class="content">Security</span></a>
-    <li><a href="#acknowledgements"><span class="secno">7</span> <span class="content">Acknowledgements</span></a>
+    <li>
+     <a href="#security"><span class="secno">5</span> <span class="content">Security</span></a>
+     <ol class="toc">
+      <li><a href="#security-availability"><span class="secno">5.1</span> <span class="content">Availability</span></a>
+      <li><a href="#security-addressing"><span class="secno">5.2</span> <span class="content">Addressing</span></a>
+      <li><a href="#security-tampering"><span class="secno">5.3</span> <span class="content">Tampering</span></a>
+     </ol>
+    <li><a href="#acknowledgements"><span class="secno">6</span> <span class="content">Acknowledgements</span></a>
     <li><a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
@@ -1677,9 +1682,52 @@ and route securely to the right origin.</p>
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="otpcredential"><code><c- g>OTPCredential</c-></code></dfn> : <a class="n" data-link-type="idl-name" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget"><c- n>EventTarget</c-></a> {
 };
 </pre>
-   <h2 class="heading settled" data-level="5" id="globals"><span class="secno">5. </span><span class="content">Global Interfaces</span><a class="self-link" href="#globals"></a></h2>
-   <h2 class="heading settled" data-level="6" id="security"><span class="secno">6. </span><span class="content">Security</span><a class="self-link" href="#security"></a></h2>
-   <h2 class="heading settled" data-level="7" id="acknowledgements"><span class="secno">7. </span><span class="content">Acknowledgements</span><a class="self-link" href="#acknowledgements"></a></h2>
+   <h2 class="heading settled" data-level="5" id="security"><span class="secno">5. </span><span class="content">Security</span><a class="self-link" href="#security"></a></h2>
+   <p>From a security perspective, there are two considerations with this API:</p>
+   <ul>
+    <li data-md>
+     <p>addressing: preventing crossing an origin boundary between the sending and the receiving of OTPs.</p>
+    <li data-md>
+     <p>tampering: preventing attacks based on the modification of the message.</p>
+   </ul>
+   <h3 class="heading settled" data-level="5.1" id="security-availability"><span class="secno">5.1. </span><span class="content">Availability</span><a class="self-link" href="#security-availability"></a></h3>
+   <p>This API is only available on:</p>
+   <ul>
+    <li data-md>
+     <p>top level frames and</p>
+    <li data-md>
+     <p>https (or localhost, for development purposes)</p>
+   </ul>
+   <p>This API is also only available on top level frames, to avoid abuse by third party iframes / libraries. It could be made available to inner frames when the origin match, but we haven’t yet found a concrete requirement / demand for this feature, so we keep it more constrained for the moment.</p>
+   <p>This API is also only available via https or localhost (for development purposes). We don’t entirely adopt the concept of trustworthy urls because it covers more schemes (e.g. data://123) than we would like to (our initial intuition is that (a) https and localhost covers most cases and (b) it needs to be clear to the user what public facing entity its sending the SMS).</p>
+   <h3 class="heading settled" data-level="5.2" id="security-addressing"><span class="secno">5.2. </span><span class="content">Addressing</span><a class="self-link" href="#security-addressing"></a></h3>
+   <p>Each transport mechanism is responsible for guaranteeing that the browser has enough information to route the OTP appropriately to the intended origin.</p>
+   <p>For SMS, for example, the addressing scheme explicitly names the intented origin (in this case, example.com):</p>
+   <div class="example" id="example-7552cff1②">
+    <a class="self-link" href="#example-7552cff1②"></a> 
+<pre>Your verification code is: 123ABC78
+
+@example.com #123ABC78
+</pre>
+   </div>
+   <p>The addressing scheme must be enforced by the agent to guarantee that it gets routed appropriately.</p>
+   <h3 class="heading settled" data-level="5.3" id="security-tampering"><span class="secno">5.3. </span><span class="content">Tampering</span><a class="self-link" href="#security-tampering"></a></h3>
+   <p>There isn’t any built-in cryptographic guarantee that the OTP that is being handed back by this API hasn’t been tampered with. For example, an attacker could send an SMS to the user’s phone with an arbitrary origin which the agent happilly passes back to the requesting call.</p>
+   <div class="example" id="example-2de70cc1">
+    <a class="self-link" href="#example-2de70cc1"></a> 
+<pre>Your verification code is: MUAHAHAHA
+
+@example.com #MUAHAHAHA
+</pre>
+   </div>
+   <p>It is the responsibility for the caller to:</p>
+   <ul>
+    <li data-md>
+     <p>put in place the checks necessary to verify that the OTP that was received is a valid one (e.g. store OTPs that were sent on a server side database).</p>
+    <li data-md>
+     <p>degrade gracefully when an invalid OTP is received (e.g. re-request one).</p>
+   </ul>
+   <h2 class="heading settled" data-level="6" id="acknowledgements"><span class="secno">6. </span><span class="content">Acknowledgements</span><a class="self-link" href="#acknowledgements"></a></h2>
    <p>Many thanks to
 Steven Soneff,
 Ayu Ishii,
