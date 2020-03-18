@@ -18,6 +18,20 @@ spec: ecma262; urlPrefix: https://tc39.github.io/ecma262/
     type: dfn
         text: time values; url: sec-time-values-and-time-range
         text: promise; url: sec-promise-objects
+
+spec: credential-management-1; urlPrefix: https://w3c.github.io/webappsec-credential-management/
+    type: dictionary
+        text: CredentialRequestOptions; url: dictdef-credentialrequestoptions
+    for: Credential
+        type: method
+            text: [[CollectFromCredentialStore]](origin, options, sameOriginWithAncestors)
+            text: [[Create]](origin, options, sameOriginWithAncestors)
+            text: [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)
+            text: [[Store]](credential, sameOriginWithAncestors)
+    type: dfn
+        text: signal
+        text: same-origin with its ancestors; url: same-origin-with-its-ancestors
+
 </pre>
 
 <pre class=link-defaults>
@@ -247,13 +261,12 @@ Your verification code is: 123ABC78
 </div>
 
 <!-- ============================================================ -->
-# The {{OTPCredential}} Interface # {#OTPCredential}
+# <dfn interface>OTPCredential</dfn> Interface # {#OTPCredential}
 <!-- ============================================================ -->
 
-The OTPCredential interface represents a one time password that is
-returned as a result of the credential management request. The code
-attribute contains the programatically readable OTP that was passed
-as well as the value "otp" as the "type".
+The {{OTPCredential}} interface extends {{Credential}} and contains
+the attributes that are returned to the caller when a new one time
+password is retrieved.
 
 <xmp class=idl>
 [Exposed=Window, SecureContext]
@@ -261,6 +274,19 @@ interface OTPCredential : Credential {
     readonly attribute DOMString code;
 };
 </xmp>
+
+<dl dfn-type="attribute" dfn-for="OTPCredential">
+    :   {{Credential/id}}
+    ::  This attribute is inherited from {{Credential}}
+
+    :   <dfn>\[[type]]</dfn>
+    ::  The {{OTPCredential}} [=interface object=]'s {{Credential/[[type]]}} [=internal slot=]'s value is the string
+        "`otp`".
+
+    :   <dfn>{{OTPCredential/code}}</dfn>
+    ::  The retrieved one time password. 
+
+</dl>
 
 <!-- ============================================================ -->
 # Security # {#security}
