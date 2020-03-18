@@ -1225,7 +1225,7 @@ Possible extra rowspan handling
   <meta content="Bikeshed version 8c5cd69b2db6b377093f1f5e0c00b44e6d9e986b" name="generator">
   <link href="http://wicg.github.io/WebOTP" rel="canonical">
   <link href="logo-otp.png" rel="icon">
-  <meta content="23eb62dea077340be58c0f8be6e8197420689381" name="document-revision">
+  <meta content="bec4199c11680a1a889bf9277771087efc965642" name="document-revision">
 <style>
 dl.domintro dt {
     font-family: Menlo, Consolas, "DejaVu Sans Mono", Monaco, monospace;
@@ -1535,7 +1535,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li>
      <a href="#API"><span class="secno">2</span> <span class="content">Client Side API</span></a>
      <ol class="toc">
-      <li><a href="#OTPCredential"><span class="secno">2.1</span> <span class="content">The OTPCredential Interface</span></a>
+      <li>
+       <a href="#OTPCredential"><span class="secno">2.1</span> <span class="content">The OTPCredential Interface</span></a>
+       <ol class="toc">
+        <li><a href="#sctn-discover-from-external-source"><span class="secno">2.1.1</span> <span class="content">The <code><span><code>[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)</code></span></code> Method</span></a>
+       </ol>
       <li><a href="#CredentialRequestOptions"><span class="secno">2.2</span> <span class="content"><code>CredentialRequestOptions</code></span></a>
       <li><a href="#OTPCredentialRequestOptions"><span class="secno">2.3</span> <span class="content"><code>OTPCredentialRequestOptions</code></span></a>
       <li><a href="#enum-transport"><span class="secno">2.4</span> <span class="content"><code>OTPCredentialTransportType</code></span></a>
@@ -1698,189 +1702,224 @@ setTimeout<c- p>(()</c-> <c- p>=></c-> <c- p>{</c->
 </pre>
    </div>
    <h2 class="heading settled" data-level="2" id="API"><span class="secno">2. </span><span class="content">Client Side API</span><a class="self-link" href="#API"></a></h2>
+   <p>Websites call <code><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-get" id="ref-for-dom-credentialscontainer-get">navigator.credentials.get({otp:..., ...})</a></code> retrieve an OTP, with the user’s consent.</p>
+   <p>The implementation <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-get" id="ref-for-dom-credentialscontainer-get①">navigator.credentials.get()</a></code> looks through all of the interfaces that inherit from <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#credential" id="ref-for-credential">Credential</a></code> of which <code class="idl"><a data-link-type="idl" href="#otpcredential" id="ref-for-otpcredential">OTPCredential</a></code> is one. The implementation calls <code>OTPCredential.<code class="idl"><a data-link-type="idl" href="#dom-otpcredential-collectfromcredentialstore-slot" id="ref-for-dom-otpcredential-collectfromcredentialstore-slot">[[CollectFromCredentialStore]]()</a></code></code> to collect any <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#credentials" id="ref-for-credentials">credentials</a> that
+should be available without <a data-link-type="dfn" href="https://w3c.github.io/webappsec-credential-management/#user-mediated" id="ref-for-user-mediated">user mediation</a>, and if it does not find
+exactly one of those, it then calls <code>OTPCredential.<code class="idl"><a data-link-type="idl" href="#dom-otpcredential-discoverfromexternalsource-slot" id="ref-for-dom-otpcredential-discoverfromexternalsource-slot">[[DiscoverFromExternalSource]]()</a></code></code> to have
+the user select a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-credential-management/#credential-source" id="ref-for-credential-source">credential source</a> and fulfill the request.</p>
+   <p>Since this specification requires an <a data-link-type="dfn">authorization gesture</a> to create OTP <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#credentials" id="ref-for-credentials①">credentials</a>, the <code>OTPCredential.<dfn class="dfn-paneled idl-code" data-dfn-for="OTPCredential" data-dfn-type="method" data-export id="dom-otpcredential-collectfromcredentialstore-slot"><code>[[CollectFromCredentialStore]](origin, options, sameOriginWithAncestors)</code></dfn></code> <a data-link-type="dfn">internal method</a> inherits the default behavior of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#collectfromcredentialstore-origin-options-sameoriginwithancestors" id="ref-for-collectfromcredentialstore-origin-options-sameoriginwithancestors">Credential.[[CollectFromCredentialStore]]()</a></code>, of returning an empty set.</p>
+   <p>This <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-get" id="ref-for-dom-credentialscontainer-get②">navigator.credentials.get()</a></code> operation can be aborted by leveraging the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortcontroller" id="ref-for-abortcontroller">AbortController</a></code>;
+see <a href="https://dom.spec.whatwg.org/#abortcontroller-api-integration">DOM §3.3 Using AbortController and AbortSignal objects in APIs</a> for detailed instructions.</p>
    <h3 class="heading settled" data-level="2.1" id="OTPCredential"><span class="secno">2.1. </span><span class="content">The OTPCredential Interface</span><a class="self-link" href="#OTPCredential"></a></h3>
-   <p>The <code class="idl"><a data-link-type="idl" href="#otpcredential" id="ref-for-otpcredential">OTPCredential</a></code> interface extends <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#credential" id="ref-for-credential">Credential</a></code> and contains
+   <p>The <code class="idl"><a data-link-type="idl" href="#otpcredential" id="ref-for-otpcredential①">OTPCredential</a></code> interface extends <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#credential" id="ref-for-credential①">Credential</a></code> and contains
 the attributes that are returned to the caller when a new one time
 password is retrieved.</p>
+   <p><code class="idl"><a data-link-type="idl" href="#otpcredential" id="ref-for-otpcredential②">OTPCredential</a></code>'s <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-interface-object" id="ref-for-dfn-interface-object">interface object</a> inherits <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#credential" id="ref-for-credential②">Credential</a></code>'s implementation of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#collectfromcredentialstore-origin-options-sameoriginwithancestors" id="ref-for-collectfromcredentialstore-origin-options-sameoriginwithancestors①">[[CollectFromCredentialStore]](origin, options, sameOriginWithAncestors)</a></code>, and defines its own
+implementation of <code class="idl"><a data-link-type="idl" href="#dom-otpcredential-discoverfromexternalsource-slot" id="ref-for-dom-otpcredential-discoverfromexternalsource-slot①">[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)</a></code>.</p>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext"><c- g>SecureContext</c-></a>]
-<c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="otpcredential"><code><c- g>OTPCredential</c-></code></dfn> : <a class="n" data-link-type="idl-name" href="https://w3c.github.io/webappsec-credential-management/#credential" id="ref-for-credential①"><c- n>Credential</c-></a> {
+<c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="otpcredential"><code><c- g>OTPCredential</c-></code></dfn> : <a class="n" data-link-type="idl-name" href="https://w3c.github.io/webappsec-credential-management/#credential" id="ref-for-credential③"><c- n>Credential</c-></a> {
     <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="DOMString" href="#dom-otpcredential-code" id="ref-for-dom-otpcredential-code"><c- g>code</c-></a>;
 };
 </pre>
    <dl>
     <dt data-md><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credential-id" id="ref-for-dom-credential-id">id</a></code>
     <dd data-md>
-     <p>This attribute is inherited from <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#credential" id="ref-for-credential②">Credential</a></code></p>
+     <p>This attribute is inherited from <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#credential" id="ref-for-credential④">Credential</a></code></p>
     <dt data-md><dfn class="idl-code" data-dfn-for="OTPCredential" data-dfn-type="attribute" data-export id="dom-otpcredential-type-slot"><code>[[type]]</code><a class="self-link" href="#dom-otpcredential-type-slot"></a></dfn>
     <dd data-md>
-     <p>The <code class="idl"><a data-link-type="idl" href="#otpcredential" id="ref-for-otpcredential①">OTPCredential</a></code> <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-interface-object" id="ref-for-dfn-interface-object">interface object</a>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credential-type-slot" id="ref-for-dom-credential-type-slot">[[type]]</a></code> <a data-link-type="dfn">internal slot</a>'s value is the string
+     <p>The <code class="idl"><a data-link-type="idl" href="#otpcredential" id="ref-for-otpcredential③">OTPCredential</a></code> <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-interface-object" id="ref-for-dfn-interface-object①">interface object</a>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credential-type-slot" id="ref-for-dom-credential-type-slot">[[type]]</a></code> <a data-link-type="dfn">internal slot</a>'s value is the string
 "<code>otp</code>".</p>
     <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="OTPCredential" data-dfn-type="attribute" data-export id="dom-otpcredential-code"><code class="idl"><a data-link-type="idl" href="#dom-otpcredential-code" id="ref-for-dom-otpcredential-code①">code</a></code></dfn>, <span> of type <a data-link-type="idl-name" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString①">DOMString</a>, readonly</span>
     <dd data-md>
      <p>The retrieved one time password.</p>
    </dl>
-   <h3 class="heading settled" data-level="2.2" id="CredentialRequestOptions"><span class="secno">2.2. </span><span class="content"><code>CredentialRequestOptions</code></span><a class="self-link" href="#CredentialRequestOptions"></a></h3>
-   <p>To support obtaining OTPs via <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-get" id="ref-for-dom-credentialscontainer-get">navigator.credentials.get()</a></code>,
-this document extends the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dictdef-credentialrequestoptions" id="ref-for-dictdef-credentialrequestoptions">CredentialRequestOptions</a></code> dictionary as follows:</p>
-<pre class="idl highlight def"><c- b>partial</c-> <c- b>dictionary</c-> <a class="idl-code" data-link-type="dictionary" href="https://w3c.github.io/webappsec-credential-management/#dictdef-credentialrequestoptions" id="ref-for-dictdef-credentialrequestoptions①"><c- g>CredentialRequestOptions</c-></a> {
-    <a class="n" data-link-type="idl-name" href="#dictdef-otpcredentialrequestoptions" id="ref-for-dictdef-otpcredentialrequestoptions"><c- n>OTPCredentialRequestOptions</c-></a> <a class="idl-code" data-link-type="dict-member" data-type="OTPCredentialRequestOptions " href="#dom-credentialrequestoptions-otp" id="ref-for-dom-credentialrequestoptions-otp"><c- g>otp</c-></a>;
+   <h4 class="heading settled" data-level="2.1.1" id="sctn-discover-from-external-source"><span class="secno">2.1.1. </span><span class="content">The <code><dfn class="dfn-paneled idl-code" data-dfn-for="OTPCredential" data-dfn-type="method" data-export id="dom-otpcredential-discoverfromexternalsource-slot"><code>[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)</code></dfn></code> Method</span><a class="self-link" href="#sctn-discover-from-external-source"></a></h4>
+   <div data-link-for-hint="PublicKeyCredential/[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)">
+    <p>This <a data-link-type="dfn">internal method</a> accepts three arguments:</p>
+    <dl>
+     <dt data-md><dfn class="idl-code" data-dfn-for="PublicKeyCredential/[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)" data-dfn-type="argument" data-export id="dom-publickeycredential-discoverfromexternalsource-origin-options-sameoriginwithancestors-origin"><code>origin</code><a class="self-link" href="#dom-publickeycredential-discoverfromexternalsource-origin-options-sameoriginwithancestors-origin"></a></dfn>
+     <dd data-md>
+      <p>This argument is the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object">relevant settings object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin">origin</a>, as determined by the
+calling <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-get" id="ref-for-dom-credentialscontainer-get③">get()</a></code> implementation, i.e., <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#credentialscontainer" id="ref-for-credentialscontainer">CredentialsContainer</a></code>'s <a data-link-type="abstract-op" href="https://w3c.github.io/webappsec-credential-management/#abstract-opdef-request-a-credential" id="ref-for-abstract-opdef-request-a-credential">Request a <code>Credential</code></a> abstract operation.</p>
+     <dt data-md><dfn class="idl-code" data-dfn-for="PublicKeyCredential/[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)" data-dfn-type="argument" data-export id="dom-publickeycredential-discoverfromexternalsource-origin-options-sameoriginwithancestors-options"><code>options</code><a class="self-link" href="#dom-publickeycredential-discoverfromexternalsource-origin-options-sameoriginwithancestors-options"></a></dfn>
+     <dd data-md>
+      <p>This argument is a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dictdef-credentialrequestoptions" id="ref-for-dictdef-credentialrequestoptions">CredentialRequestOptions</a></code> object whose <code><var>options</var>.<code class="idl"><a data-link-type="idl" href="#dom-credentialrequestoptions-otp" id="ref-for-dom-credentialrequestoptions-otp">otp</a></code></code> member contains a <code class="idl"><a data-link-type="idl" href="#dictdef-otpcredentialrequestoptions" id="ref-for-dictdef-otpcredentialrequestoptions">OTPCredentialRequestOptions</a></code> object specifying the desired attributes of the OTP to retrieve.</p>
+     <dt data-md><dfn class="idl-code" data-dfn-for="PublicKeyCredential/[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)" data-dfn-type="argument" data-export id="dom-publickeycredential-discoverfromexternalsource-origin-options-sameoriginwithancestors-sameoriginwithancestors"><code>sameOriginWithAncestors</code><a class="self-link" href="#dom-publickeycredential-discoverfromexternalsource-origin-options-sameoriginwithancestors-sameoriginwithancestors"></a></dfn>
+     <dd data-md>
+      <p>This argument is a Boolean value which is <code>true</code> if and only if the caller’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object" id="ref-for-environment-settings-object">environment settings object</a> is <a data-link-type="dfn" href="https://w3c.github.io/webappsec-credential-management/#same-origin-with-its-ancestors" id="ref-for-same-origin-with-its-ancestors">same-origin with its ancestors</a>. It is <code>false</code> if caller is cross-origin.</p>
+    </dl>
+    <p class="note" role="note"><span>Note:</span> <strong>This algorithm is synchronous:</strong> the <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-promise" id="ref-for-idl-promise">Promise</a></code> resolution/rejection is handled by <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-get" id="ref-for-dom-credentialscontainer-get④">navigator.credentials.get()</a></code>.</p>
+    <p>When this method is invoked, the user agent MUST execute the following algorithm:</p>
+    <ol>
+     <li data-md>
+      <p class="assertion">Assert: <code><var>options</var>.<code class="idl"><a data-link-type="idl" href="#dom-credentialrequestoptions-otp" id="ref-for-dom-credentialrequestoptions-otp①">otp</a></code></code> is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present">present</a>.</p>
+     <li data-md>
+      <p>Let <var>options</var> be the value of <code><var>options</var>.<code class="idl"><a data-link-type="idl" href="#dom-credentialrequestoptions-otp" id="ref-for-dom-credentialrequestoptions-otp②">otp</a></code></code>.</p>
+     <li data-md>
+      <p>TODO: continue here.</p>
+    </ol>
+    <h3 class="heading settled" data-level="2.2" id="CredentialRequestOptions"><span class="secno">2.2. </span><span class="content"><code>CredentialRequestOptions</code></span><a class="self-link" href="#CredentialRequestOptions"></a></h3>
+    <p>To support obtaining OTPs via <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-get" id="ref-for-dom-credentialscontainer-get⑤">navigator.credentials.get()</a></code>,
+this document extends the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dictdef-credentialrequestoptions" id="ref-for-dictdef-credentialrequestoptions①">CredentialRequestOptions</a></code> dictionary as follows:</p>
+<pre class="idl highlight def"><c- b>partial</c-> <c- b>dictionary</c-> <a class="idl-code" data-link-type="dictionary" href="https://w3c.github.io/webappsec-credential-management/#dictdef-credentialrequestoptions" id="ref-for-dictdef-credentialrequestoptions②"><c- g>CredentialRequestOptions</c-></a> {
+    <a class="n" data-link-type="idl-name" href="#dictdef-otpcredentialrequestoptions" id="ref-for-dictdef-otpcredentialrequestoptions①"><c- n>OTPCredentialRequestOptions</c-></a> <a class="idl-code" data-link-type="dict-member" data-type="OTPCredentialRequestOptions " href="#dom-credentialrequestoptions-otp" id="ref-for-dom-credentialrequestoptions-otp③"><c- g>otp</c-></a>;
 };
 </pre>
-   <div>
-    <dl>
-     <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="CredentialRequestOptions" data-dfn-type="dict-member" data-export id="dom-credentialrequestoptions-otp"><code>otp</code></dfn>, <span> of type <a data-link-type="idl-name" href="#dictdef-otpcredentialrequestoptions" id="ref-for-dictdef-otpcredentialrequestoptions①">OTPCredentialRequestOptions</a></span>
-     <dd data-md>
-      <p>This OPTIONAL member is used to make WebOTP requests.</p>
-    </dl>
-   </div>
-   <h3 class="heading settled" data-level="2.3" id="OTPCredentialRequestOptions"><span class="secno">2.3. </span><span class="content"><code>OTPCredentialRequestOptions</code></span><a class="self-link" href="#OTPCredentialRequestOptions"></a></h3>
-   <p>The <code class="idl"><a data-link-type="idl" href="#dictdef-otpcredentialrequestoptions" id="ref-for-dictdef-otpcredentialrequestoptions②">OTPCredentialRequestOptions</a></code> dictionary supplies <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-get" id="ref-for-dom-credentialscontainer-get①">navigator.credentials.get()</a></code> with the data it needs to retrieve an
+    <div>
+     <dl>
+      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="CredentialRequestOptions" data-dfn-type="dict-member" data-export id="dom-credentialrequestoptions-otp"><code>otp</code></dfn>, <span> of type <a data-link-type="idl-name" href="#dictdef-otpcredentialrequestoptions" id="ref-for-dictdef-otpcredentialrequestoptions②">OTPCredentialRequestOptions</a></span>
+      <dd data-md>
+       <p>This OPTIONAL member is used to make WebOTP requests.</p>
+     </dl>
+    </div>
+    <h3 class="heading settled" data-level="2.3" id="OTPCredentialRequestOptions"><span class="secno">2.3. </span><span class="content"><code>OTPCredentialRequestOptions</code></span><a class="self-link" href="#OTPCredentialRequestOptions"></a></h3>
+    <p>The <code class="idl"><a data-link-type="idl" href="#dictdef-otpcredentialrequestoptions" id="ref-for-dictdef-otpcredentialrequestoptions③">OTPCredentialRequestOptions</a></code> dictionary supplies <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-get" id="ref-for-dom-credentialscontainer-get⑥">navigator.credentials.get()</a></code> with the data it needs to retrieve an
 OTP.</p>
 <pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-otpcredentialrequestoptions"><code><c- g>OTPCredentialRequestOptions</c-></code></dfn> {
-  <c- b>sequence</c->&lt;<a class="n" data-link-type="idl-name" href="#enumdef-otpcredentialtransporttype" id="ref-for-enumdef-otpcredentialtransporttype"><c- n>OTPCredentialTransportType</c-></a>> <dfn class="idl-code" data-default="[]" data-dfn-for="OTPCredentialRequestOptions" data-dfn-type="dict-member" data-export data-type="sequence<OTPCredentialTransportType> " id="dom-otpcredentialrequestoptions-transport"><code><c- g>transport</c-></code><a class="self-link" href="#dom-otpcredentialrequestoptions-transport"></a></dfn> = [];
+  <c- b>sequence</c->&lt;<a class="n" data-link-type="idl-name" href="#enumdef-otpcredentialtransporttype" id="ref-for-enumdef-otpcredentialtransporttype"><c- n>OTPCredentialTransportType</c-></a>> <a class="idl-code" data-default="[]" data-link-type="dict-member" data-type="sequence<OTPCredentialTransportType> " href="#dom-otpcredentialrequestoptions-transport" id="ref-for-dom-otpcredentialrequestoptions-transport"><c- g>transport</c-></a> = [];
 };
 </pre>
-   <div>
-    <dl>
-     <dt data-md><dfn class="idl-code" data-dfn-for="OTPCredentialRequestOptions" data-dfn-type="dict-member" data-export id="dom-otpcredentialrequestoptions-transports"><code>transports</code><a class="self-link" href="#dom-otpcredentialrequestoptions-transports"></a></dfn>, <span></span>
-     <dd data-md>
-      <p>This OPTIONAL member contains a hint as to how the <a data-link-type="dfn">server</a> might receive the OTP.
-The values SHOULD be members of <code class="idl"><a data-link-type="idl" href="#enumdef-otpcredentialtransporttype" id="ref-for-enumdef-otpcredentialtransporttype①">OTPCredentialTransportType</a></code> but <a data-link-type="dfn">client platforms</a> MUST ignore unknown values.</p>
-    </dl>
-   </div>
-   <h3 class="heading settled" data-level="2.4" id="enum-transport"><span class="secno">2.4. </span><span class="content"><code>OTPCredentialTransportType</code></span><a class="self-link" href="#enum-transport"></a></h3>
+    <div>
+     <dl>
+      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="OTPCredentialRequestOptions" data-dfn-type="dict-member" data-export id="dom-otpcredentialrequestoptions-transport"><code>transport</code></dfn>, <span> of type sequence&lt;<a data-link-type="idl-name" href="#enumdef-otpcredentialtransporttype" id="ref-for-enumdef-otpcredentialtransporttype①">OTPCredentialTransportType</a>>, defaulting to <code>[]</code></span>
+      <dd data-md>
+       <p>This OPTIONAL member contains a hint as to how the <a data-link-type="dfn">server</a> might receive the OTP.
+The values SHOULD be members of <code class="idl"><a data-link-type="idl" href="#enumdef-otpcredentialtransporttype" id="ref-for-enumdef-otpcredentialtransporttype②">OTPCredentialTransportType</a></code> but <a data-link-type="dfn">client platforms</a> MUST ignore unknown values.</p>
+     </dl>
+    </div>
+    <h3 class="heading settled" data-level="2.4" id="enum-transport"><span class="secno">2.4. </span><span class="content"><code>OTPCredentialTransportType</code></span><a class="self-link" href="#enum-transport"></a></h3>
 <pre class="idl highlight def"><c- b>enum</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="enum" data-export id="enumdef-otpcredentialtransporttype"><code><c- g>OTPCredentialTransportType</c-></code></dfn> {
     <a class="idl-code" data-link-type="enum-value" href="#dom-otpcredentialtransporttype-sms" id="ref-for-dom-otpcredentialtransporttype-sms"><c- s>"sms"</c-></a>,
 };
 </pre>
-   <div>
-     User Agents may implement various transport mechanisms to allow
+    <div>
+      User Agents may implement various transport mechanisms to allow
     the retrieval of OTPs. This enumeration defines hints as to how
     user agents may communicate with the transport mechanisms. 
-    <dl>
-     <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="OTPCredentialTransportType" data-dfn-type="enum-value" data-export data-lt="&quot;sms&quot;|sms" id="dom-otpcredentialtransporttype-sms"><code>sms</code></dfn>
-     <dd data-md>
-      <p>Indicates that the OTP is expected to arrive via SMS.</p>
-    </dl>
-   </div>
-   <h2 class="heading settled" data-level="3" id="transports"><span class="secno">3. </span><span class="content">Server Side API</span><a class="self-link" href="#transports"></a></h2>
-   <p>We expect a variety of different transport mechanisms to enable OTPs
+     <dl>
+      <dt data-md><dfn class="dfn-paneled idl-code" data-dfn-for="OTPCredentialTransportType" data-dfn-type="enum-value" data-export data-lt="&quot;sms&quot;|sms" id="dom-otpcredentialtransporttype-sms"><code>sms</code></dfn>
+      <dd data-md>
+       <p>Indicates that the OTP is expected to arrive via SMS.</p>
+     </dl>
+    </div>
+    <h2 class="heading settled" data-level="3" id="transports"><span class="secno">3. </span><span class="content">Server Side API</span><a class="self-link" href="#transports"></a></h2>
+    <p>We expect a variety of different transport mechanisms to enable OTPs
 to be received, most notably via SMS, email and hardware devices.</p>
-   <p>Each of these transport mechanisms will need their own conventions on
+    <p>Each of these transport mechanisms will need their own conventions on
 how to provide OTPs to the browser.</p>
-   <p>In this draft, we start explicitly specifying how SMS OTPs can be
+    <p>In this draft, we start explicitly specifying how SMS OTPs can be
 delivered to browsers, but we leave the API surface to be extensible
 to other transports.</p>
-   <h3 class="heading settled" data-level="3.1" id="transports-sms"><span class="secno">3.1. </span><span class="content">SMS</span><a class="self-link" href="#transports-sms"></a></h3>
-   <p>One of the most commonly used transport mechanisms for OTP is via
+    <h3 class="heading settled" data-level="3.1" id="transports-sms"><span class="secno">3.1. </span><span class="content">SMS</span><a class="self-link" href="#transports-sms"></a></h3>
+    <p>One of the most commonly used transport mechanisms for OTP is via
 SMS messages, allowing developers to verify phone numbers. They
 are typically sent embedded in an SMS message, which gets copied and
 pasted by users.</p>
-   <p>What follows is a definition of a machine-readable formatting convention
+    <p>What follows is a definition of a machine-readable formatting convention
 that servers can use to send SMS messages that browsers can intercept
 and route securely to the right origin.</p>
-   <p>Here is an example of such convention:</p>
-   <div class="example" id="example-7552cff1①">
-    <a class="self-link" href="#example-7552cff1①"></a> 
+    <p>Here is an example of such convention:</p>
+    <div class="example" id="example-7552cff1①">
+     <a class="self-link" href="#example-7552cff1①"></a> 
 <pre>Your verification code is: 123ABC78
 
 @example.com #123ABC78
 </pre>
-   </div>
-   <h2 class="heading settled" data-level="4" id="security"><span class="secno">4. </span><span class="content">Security</span><a class="self-link" href="#security"></a></h2>
-   <p>From a security perspective, there are two considerations with this
+    </div>
+    <h2 class="heading settled" data-level="4" id="security"><span class="secno">4. </span><span class="content">Security</span><a class="self-link" href="#security"></a></h2>
+    <p>From a security perspective, there are two considerations with this
 API:</p>
-   <ul>
-    <li data-md>
-     <p>addressing: preventing crossing an origin boundary between the
-  sending and the receiving of OTPs.</p>
-    <li data-md>
-     <p>tampering: preventing attacks based on the modification of the message.</p>
-   </ul>
-   <h3 class="heading settled" data-level="4.1" id="security-availability"><span class="secno">4.1. </span><span class="content">Availability</span><a class="self-link" href="#security-availability"></a></h3>
-   <p>This API is only available on:</p>
-   <ul>
-    <li data-md>
-     <p>top level frames and</p>
-    <li data-md>
-     <p>https (or localhost, for development purposes)</p>
-   </ul>
-   <p>This API is also only available on top level frames, to avoid abuse by
+    <ul>
+     <li data-md>
+      <p>addressing: preventing crossing an origin boundary between the
+sending and the receiving of OTPs.</p>
+     <li data-md>
+      <p>tampering: preventing attacks based on the modification of the message.</p>
+    </ul>
+    <h3 class="heading settled" data-level="4.1" id="security-availability"><span class="secno">4.1. </span><span class="content">Availability</span><a class="self-link" href="#security-availability"></a></h3>
+    <p>This API is only available on:</p>
+    <ul>
+     <li data-md>
+      <p>top level frames and</p>
+     <li data-md>
+      <p>https (or localhost, for development purposes)</p>
+    </ul>
+    <p>This API is also only available on top level frames, to avoid abuse by
 third party iframes / libraries. It could be made available to inner
 frames when the origin match, but we haven’t yet found a concrete
 requirement / demand for this feature, so we keep it more constrained
 for the moment.</p>
-   <p>This API is also only available via https or localhost (for development
+    <p>This API is also only available via https or localhost (for development
 purposes). We don’t entirely adopt the concept of trustworthy urls
 because it covers more schemes (e.g. data://123) than we would like to
 (our initial intuition is that (a) https and localhost covers most
 cases and (b) it needs to be clear to the user what public facing
 entity its sending the SMS).</p>
-   <h3 class="heading settled" data-level="4.2" id="security-addressing"><span class="secno">4.2. </span><span class="content">Addressing</span><a class="self-link" href="#security-addressing"></a></h3>
-   <p>Each transport mechanism is responsible for guaranteeing that the
+    <h3 class="heading settled" data-level="4.2" id="security-addressing"><span class="secno">4.2. </span><span class="content">Addressing</span><a class="self-link" href="#security-addressing"></a></h3>
+    <p>Each transport mechanism is responsible for guaranteeing that the
 browser has enough information to route the OTP appropriately to the
 intended origin.</p>
-   <p>For SMS, for example, the addressing scheme explicitly names the
+    <p>For SMS, for example, the addressing scheme explicitly names the
 intented origin (in this case, example.com):</p>
-   <div class="example" id="example-7552cff1②">
-    <a class="self-link" href="#example-7552cff1②"></a> 
+    <div class="example" id="example-7552cff1②">
+     <a class="self-link" href="#example-7552cff1②"></a> 
 <pre>Your verification code is: 123ABC78
 
 @example.com #123ABC78
 </pre>
-   </div>
-   <p>The addressing scheme must be enforced by the agent to guarantee that
+    </div>
+    <p>The addressing scheme must be enforced by the agent to guarantee that
 it gets routed appropriately.</p>
-   <h3 class="heading settled" data-level="4.3" id="security-tampering"><span class="secno">4.3. </span><span class="content">Tampering</span><a class="self-link" href="#security-tampering"></a></h3>
-   <p>There isn’t any built-in cryptographic guarantee that the OTP that is
+    <h3 class="heading settled" data-level="4.3" id="security-tampering"><span class="secno">4.3. </span><span class="content">Tampering</span><a class="self-link" href="#security-tampering"></a></h3>
+    <p>There isn’t any built-in cryptographic guarantee that the OTP that is
 being handed back by this API hasn’t been tampered with. For example,
 an attacker could send an SMS to the user’s phone with an arbitrary
 origin which the agent happilly passes back to the requesting call.</p>
-   <div class="example" id="example-2de70cc1">
-    <a class="self-link" href="#example-2de70cc1"></a> 
+    <div class="example" id="example-2de70cc1">
+     <a class="self-link" href="#example-2de70cc1"></a> 
 <pre>Your verification code is: MUAHAHAHA
 
 @example.com #MUAHAHAHA
 </pre>
-   </div>
-   <p>It is the responsibility for the caller to:</p>
-   <ul>
-    <li data-md>
-     <p>put in place the checks necessary to verify that the OTP that was received
-  is a valid one, for example:</p>
-     <ul>
-      <li data-md>
-       <p>parsing it carefully according to its known formatting expectations
+    </div>
+    <p>It is the responsibility for the caller to:</p>
+    <ul>
+     <li data-md>
+      <p>put in place the checks necessary to verify that the OTP that was received
+is a valid one, for example:</p>
+      <ul>
+       <li data-md>
+        <p>parsing it carefully according to its known formatting expectations
 (e.g. only alpha numeric values),</p>
-      <li data-md>
-       <p>storing and checking OTPs that were sent on a server side database.</p>
-     </ul>
-    <li data-md>
-     <p>degrade gracefully when an invalid OTP is received (e.g. re-request one).</p>
-   </ul>
-   <h2 class="heading settled" data-level="5" id="privacy"><span class="secno">5. </span><span class="content">Privacy</span><a class="self-link" href="#privacy"></a></h2>
-   <p>From a privacy perspective, the most notable consideration is for a user agent
+       <li data-md>
+        <p>storing and checking OTPs that were sent on a server side database.</p>
+      </ul>
+     <li data-md>
+      <p>degrade gracefully when an invalid OTP is received (e.g. re-request one).</p>
+    </ul>
+    <h2 class="heading settled" data-level="5" id="privacy"><span class="secno">5. </span><span class="content">Privacy</span><a class="self-link" href="#privacy"></a></h2>
+    <p>From a privacy perspective, the most notable consideration is for a user agent
 to enforce the consensual exchange of information between the user and the
 website.</p>
-   <p>Specifically, this API allows the programatic verification of personally
+    <p>Specifically, this API allows the programatic verification of personally
 identifiable attributes of the user, for example email addresses and phone
 numbers.</p>
-   <p>The attack vector that is most frequently raised is a targetted attack:
+    <p>The attack vector that is most frequently raised is a targetted attack:
 websites trying to find a <strong>very</strong> specific user accross all of its user
 base. In this attack, if left unattended, a website can use this API to
 try to find a <strong>specific</strong> user that owns a <strong>specific</strong> phone number by
 sending all / some (depending on the confidence level) of its users an
 SMS and detecting when one is received.</p>
-   <p>Notably, this API doesn’t help with the <strong>acquisition</strong> of the personal
+    <p>Notably, this API doesn’t help with the <strong>acquisition</strong> of the personal
 information, but rather with its <strong>verification</strong>. That is, this API helps <strong>verifying</strong> whether the user owns a specific phone number, but doesn’t
 help acquiring the phone number in the first place (it assumes that the
 website already has access to it).</p>
-   <p>Nonetheless, The verification of the possession of these attributes is extra
+    <p>Nonetheless, The verification of the possession of these attributes is extra
 information about the user and should be handled responsibly by a user
 agent, typically via <strong>permission prompts</strong> before handing back the OTP
 to the website.</p>
-   <h2 class="heading settled" data-level="6" id="acknowledgements"><span class="secno">6. </span><span class="content">Acknowledgements</span><a class="self-link" href="#acknowledgements"></a></h2>
-   <p>Many thanks to
+    <h2 class="heading settled" data-level="6" id="acknowledgements"><span class="secno">6. </span><span class="content">Acknowledgements</span><a class="self-link" href="#acknowledgements"></a></h2>
+    <p>Many thanks to
 Steven Soneff,
 Ayu Ishii,
 Reilly Grant,
@@ -1890,9 +1929,10 @@ Joshua Bell,
 Ricky Mondello and
 Mike West
 for helping craft this proposal.</p>
-   <p>Special thanks to Tab Atkins, Jr. for creating and maintaining <a href="https://github.com/tabatkins/bikeshed">Bikeshed</a>, the specification
+    <p>Special thanks to Tab Atkins, Jr. for creating and maintaining <a href="https://github.com/tabatkins/bikeshed">Bikeshed</a>, the specification
 authoring tool used to create this document, and for his general
 authoring advice.</p>
+   </div>
   </main>
   <div data-fill-with="conformance">
    <h2 class="no-ref no-num heading settled" id="conformance"><span class="content"> Conformance</span><a class="self-link" href="#conformance"></a></h2>
@@ -2044,6 +2084,8 @@ authoring advice.</p>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
    <li><a href="#dom-otpcredential-code">code</a><span>, in §2.1</span>
+   <li><a href="#dom-otpcredential-collectfromcredentialstore-slot">[[CollectFromCredentialStore]](origin, options, sameOriginWithAncestors)</a><span>, in §2</span>
+   <li><a href="#dom-otpcredential-discoverfromexternalsource-slot">[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)</a><span>, in §2.1.1</span>
    <li><a href="#dom-credentialrequestoptions-otp">otp</a><span>, in §2.2</span>
    <li><a href="#otpcredential">OTPCredential</a><span>, in §2.1</span>
    <li><a href="#dictdef-otpcredentialrequestoptions">OTPCredentialRequestOptions</a><span>, in §2.3</span>
@@ -2051,19 +2093,39 @@ authoring advice.</p>
    <li><a href="#dom-otpcredentialtransporttype-sms">"sms"</a><span>, in §2.4</span>
    <li><a href="#dom-otpcredentialtransporttype-sms">sms</a><span>, in §2.4</span>
    <li><a href="#dom-otpcredentialrequestoptions-transport">transport</a><span>, in §2.3</span>
-   <li><a href="#dom-otpcredentialrequestoptions-transports">transports</a><span>, in §2.3</span>
    <li><a href="#dom-otpcredential-type-slot">[[type]]</a><span>, in §2.1</span>
   </ul>
   <aside class="dfn-panel" data-for="term-for-credential">
    <a href="https://w3c.github.io/webappsec-credential-management/#credential">https://w3c.github.io/webappsec-credential-management/#credential</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-credential">2.1. The OTPCredential Interface</a> <a href="#ref-for-credential①">(2)</a> <a href="#ref-for-credential②">(3)</a>
+    <li><a href="#ref-for-credential">2. Client Side API</a>
+    <li><a href="#ref-for-credential①">2.1. The OTPCredential Interface</a> <a href="#ref-for-credential②">(2)</a> <a href="#ref-for-credential③">(3)</a> <a href="#ref-for-credential④">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dictdef-credentialrequestoptions">
    <a href="https://w3c.github.io/webappsec-credential-management/#dictdef-credentialrequestoptions">https://w3c.github.io/webappsec-credential-management/#dictdef-credentialrequestoptions</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dictdef-credentialrequestoptions">2.2. CredentialRequestOptions</a> <a href="#ref-for-dictdef-credentialrequestoptions①">(2)</a>
+    <li><a href="#ref-for-dictdef-credentialrequestoptions">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a>
+    <li><a href="#ref-for-dictdef-credentialrequestoptions①">2.2. CredentialRequestOptions</a> <a href="#ref-for-dictdef-credentialrequestoptions②">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-credentialscontainer">
+   <a href="https://w3c.github.io/webappsec-credential-management/#credentialscontainer">https://w3c.github.io/webappsec-credential-management/#credentialscontainer</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-credentialscontainer">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-abstract-opdef-request-a-credential">
+   <a href="https://w3c.github.io/webappsec-credential-management/#abstract-opdef-request-a-credential">https://w3c.github.io/webappsec-credential-management/#abstract-opdef-request-a-credential</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-abstract-opdef-request-a-credential">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-collectfromcredentialstore-origin-options-sameoriginwithancestors">
+   <a href="https://w3c.github.io/webappsec-credential-management/#collectfromcredentialstore-origin-options-sameoriginwithancestors">https://w3c.github.io/webappsec-credential-management/#collectfromcredentialstore-origin-options-sameoriginwithancestors</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-collectfromcredentialstore-origin-options-sameoriginwithancestors">2. Client Side API</a>
+    <li><a href="#ref-for-collectfromcredentialstore-origin-options-sameoriginwithancestors①">2.1. The OTPCredential Interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-credential-type-slot">
@@ -2072,17 +2134,67 @@ authoring advice.</p>
     <li><a href="#ref-for-dom-credential-type-slot">2.1. The OTPCredential Interface</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-credential-source">
+   <a href="https://w3c.github.io/webappsec-credential-management/#credential-source">https://w3c.github.io/webappsec-credential-management/#credential-source</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-credential-source">2. Client Side API</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dom-credentialscontainer-get">
    <a href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-get">https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-get</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-credentialscontainer-get">2.2. CredentialRequestOptions</a>
-    <li><a href="#ref-for-dom-credentialscontainer-get①">2.3. OTPCredentialRequestOptions</a>
+    <li><a href="#ref-for-dom-credentialscontainer-get">2. Client Side API</a> <a href="#ref-for-dom-credentialscontainer-get①">(2)</a> <a href="#ref-for-dom-credentialscontainer-get②">(3)</a>
+    <li><a href="#ref-for-dom-credentialscontainer-get③">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a> <a href="#ref-for-dom-credentialscontainer-get④">(2)</a>
+    <li><a href="#ref-for-dom-credentialscontainer-get⑤">2.2. CredentialRequestOptions</a>
+    <li><a href="#ref-for-dom-credentialscontainer-get⑥">2.3. OTPCredentialRequestOptions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-credential-id">
    <a href="https://w3c.github.io/webappsec-credential-management/#dom-credential-id">https://w3c.github.io/webappsec-credential-management/#dom-credential-id</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-credential-id">2.1. The OTPCredential Interface</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-same-origin-with-its-ancestors">
+   <a href="https://w3c.github.io/webappsec-credential-management/#same-origin-with-its-ancestors">https://w3c.github.io/webappsec-credential-management/#same-origin-with-its-ancestors</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-same-origin-with-its-ancestors">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-user-mediated">
+   <a href="https://w3c.github.io/webappsec-credential-management/#user-mediated">https://w3c.github.io/webappsec-credential-management/#user-mediated</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-user-mediated">2. Client Side API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-abortcontroller">
+   <a href="https://dom.spec.whatwg.org/#abortcontroller">https://dom.spec.whatwg.org/#abortcontroller</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-abortcontroller">2. Client Side API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-credentials">
+   <a href="https://fetch.spec.whatwg.org/#credentials">https://fetch.spec.whatwg.org/#credentials</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-credentials">2. Client Side API</a> <a href="#ref-for-credentials①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-environment-settings-object">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-environment-settings-object">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-settings-object-origin">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin">https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-settings-object-origin">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-relevant-settings-object">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-relevant-settings-object">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-DOMString">
@@ -2097,6 +2209,12 @@ authoring advice.</p>
     <li><a href="#ref-for-Exposed">2.1. The OTPCredential Interface</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-idl-promise">
+   <a href="https://heycam.github.io/webidl/#idl-promise">https://heycam.github.io/webidl/#idl-promise</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idl-promise">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-SecureContext">
    <a href="https://heycam.github.io/webidl/#SecureContext">https://heycam.github.io/webidl/#SecureContext</a><b>Referenced in:</b>
    <ul>
@@ -2106,7 +2224,13 @@ authoring advice.</p>
   <aside class="dfn-panel" data-for="term-for-dfn-interface-object">
    <a href="https://heycam.github.io/webidl/#dfn-interface-object">https://heycam.github.io/webidl/#dfn-interface-object</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-interface-object">2.1. The OTPCredential Interface</a>
+    <li><a href="#ref-for-dfn-interface-object">2.1. The OTPCredential Interface</a> <a href="#ref-for-dfn-interface-object①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-present">
+   <a href="https://heycam.github.io/webidl/#dfn-present">https://heycam.github.io/webidl/#dfn-present</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-present">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a>
    </ul>
   </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
@@ -2116,17 +2240,42 @@ authoring advice.</p>
     <ul>
      <li><span class="dfn-paneled" id="term-for-credential" style="color:initial">Credential</span>
      <li><span class="dfn-paneled" id="term-for-dictdef-credentialrequestoptions" style="color:initial">CredentialRequestOptions</span>
+     <li><span class="dfn-paneled" id="term-for-credentialscontainer" style="color:initial">CredentialsContainer</span>
+     <li><span class="dfn-paneled" id="term-for-abstract-opdef-request-a-credential" style="color:initial">Request a Credential</span>
+     <li><span class="dfn-paneled" id="term-for-collectfromcredentialstore-origin-options-sameoriginwithancestors" style="color:initial">[[CollectFromCredentialStore]](origin, options, sameOriginWithAncestors)</span>
      <li><span class="dfn-paneled" id="term-for-dom-credential-type-slot" style="color:initial">[[type]]</span>
+     <li><span class="dfn-paneled" id="term-for-credential-source" style="color:initial">credential source</span>
      <li><span class="dfn-paneled" id="term-for-dom-credentialscontainer-get" style="color:initial">get()</span>
      <li><span class="dfn-paneled" id="term-for-dom-credential-id" style="color:initial">id</span>
+     <li><span class="dfn-paneled" id="term-for-same-origin-with-its-ancestors" style="color:initial">same-origin with its ancestors</span>
+     <li><span class="dfn-paneled" id="term-for-user-mediated" style="color:initial">user mediation</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[DOM]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-abortcontroller" style="color:initial">AbortController</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[FETCH]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-credentials" style="color:initial">credentials</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[HTML]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-environment-settings-object" style="color:initial">environment settings object</span>
+     <li><span class="dfn-paneled" id="term-for-concept-settings-object-origin" style="color:initial">origin</span>
+     <li><span class="dfn-paneled" id="term-for-relevant-settings-object" style="color:initial">relevant settings object</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-idl-DOMString" style="color:initial">DOMString</span>
      <li><span class="dfn-paneled" id="term-for-Exposed" style="color:initial">Exposed</span>
+     <li><span class="dfn-paneled" id="term-for-idl-promise" style="color:initial">Promise</span>
      <li><span class="dfn-paneled" id="term-for-SecureContext" style="color:initial">SecureContext</span>
      <li><span class="dfn-paneled" id="term-for-dfn-interface-object" style="color:initial">interface object</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-present" style="color:initial">present</span>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -2134,6 +2283,12 @@ authoring advice.</p>
   <dl>
    <dt id="biblio-credential-management-1">[CREDENTIAL-MANAGEMENT-1]
    <dd>Mike West. <a href="https://www.w3.org/TR/credential-management-1/">Credential Management Level 1</a>. 17 January 2019. WD. URL: <a href="https://www.w3.org/TR/credential-management-1/">https://www.w3.org/TR/credential-management-1/</a>
+   <dt id="biblio-dom">[DOM]
+   <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/">DOM Standard</a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
+   <dt id="biblio-fetch">[FETCH]
+   <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch Standard</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
+   <dt id="biblio-html">[HTML]
+   <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
    <dt id="biblio-webidl">[WebIDL]
@@ -2141,16 +2296,16 @@ authoring advice.</p>
   </dl>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext①"><c- g>SecureContext</c-></a>]
-<c- b>interface</c-> <a href="#otpcredential"><code><c- g>OTPCredential</c-></code></a> : <a class="n" data-link-type="idl-name" href="https://w3c.github.io/webappsec-credential-management/#credential" id="ref-for-credential①①"><c- n>Credential</c-></a> {
+<c- b>interface</c-> <a href="#otpcredential"><code><c- g>OTPCredential</c-></code></a> : <a class="n" data-link-type="idl-name" href="https://w3c.github.io/webappsec-credential-management/#credential" id="ref-for-credential③①"><c- n>Credential</c-></a> {
     <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②"><c- b>DOMString</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="DOMString" href="#dom-otpcredential-code" id="ref-for-dom-otpcredential-code②"><c- g>code</c-></a>;
 };
 
-<c- b>partial</c-> <c- b>dictionary</c-> <a class="idl-code" data-link-type="dictionary" href="https://w3c.github.io/webappsec-credential-management/#dictdef-credentialrequestoptions" id="ref-for-dictdef-credentialrequestoptions①①"><c- g>CredentialRequestOptions</c-></a> {
-    <a class="n" data-link-type="idl-name" href="#dictdef-otpcredentialrequestoptions" id="ref-for-dictdef-otpcredentialrequestoptions③"><c- n>OTPCredentialRequestOptions</c-></a> <a class="idl-code" data-link-type="dict-member" data-type="OTPCredentialRequestOptions " href="#dom-credentialrequestoptions-otp" id="ref-for-dom-credentialrequestoptions-otp①"><c- g>otp</c-></a>;
+<c- b>partial</c-> <c- b>dictionary</c-> <a class="idl-code" data-link-type="dictionary" href="https://w3c.github.io/webappsec-credential-management/#dictdef-credentialrequestoptions" id="ref-for-dictdef-credentialrequestoptions②①"><c- g>CredentialRequestOptions</c-></a> {
+    <a class="n" data-link-type="idl-name" href="#dictdef-otpcredentialrequestoptions" id="ref-for-dictdef-otpcredentialrequestoptions①①"><c- n>OTPCredentialRequestOptions</c-></a> <a class="idl-code" data-link-type="dict-member" data-type="OTPCredentialRequestOptions " href="#dom-credentialrequestoptions-otp" id="ref-for-dom-credentialrequestoptions-otp③①"><c- g>otp</c-></a>;
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-otpcredentialrequestoptions"><code><c- g>OTPCredentialRequestOptions</c-></code></a> {
-  <c- b>sequence</c->&lt;<a class="n" data-link-type="idl-name" href="#enumdef-otpcredentialtransporttype" id="ref-for-enumdef-otpcredentialtransporttype②"><c- n>OTPCredentialTransportType</c-></a>> <a data-default="[]" data-type="sequence<OTPCredentialTransportType> " href="#dom-otpcredentialrequestoptions-transport"><code><c- g>transport</c-></code></a> = [];
+  <c- b>sequence</c->&lt;<a class="n" data-link-type="idl-name" href="#enumdef-otpcredentialtransporttype" id="ref-for-enumdef-otpcredentialtransporttype③"><c- n>OTPCredentialTransportType</c-></a>> <a class="idl-code" data-default="[]" data-link-type="dict-member" data-type="sequence<OTPCredentialTransportType> " href="#dom-otpcredentialrequestoptions-transport" id="ref-for-dom-otpcredentialrequestoptions-transport①"><c- g>transport</c-></a> = [];
 };
 
 <c- b>enum</c-> <a href="#enumdef-otpcredentialtransporttype"><code><c- g>OTPCredentialTransportType</c-></code></a> {
@@ -2158,10 +2313,17 @@ authoring advice.</p>
 };
 
 </pre>
+  <aside class="dfn-panel" data-for="dom-otpcredential-collectfromcredentialstore-slot">
+   <b><a href="#dom-otpcredential-collectfromcredentialstore-slot">#dom-otpcredential-collectfromcredentialstore-slot</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-otpcredential-collectfromcredentialstore-slot">2. Client Side API</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="otpcredential">
    <b><a href="#otpcredential">#otpcredential</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-otpcredential">2.1. The OTPCredential Interface</a> <a href="#ref-for-otpcredential①">(2)</a>
+    <li><a href="#ref-for-otpcredential">2. Client Side API</a>
+    <li><a href="#ref-for-otpcredential①">2.1. The OTPCredential Interface</a> <a href="#ref-for-otpcredential②">(2)</a> <a href="#ref-for-otpcredential③">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-otpcredential-code">
@@ -2170,23 +2332,38 @@ authoring advice.</p>
     <li><a href="#ref-for-dom-otpcredential-code">2.1. The OTPCredential Interface</a> <a href="#ref-for-dom-otpcredential-code①">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="dom-otpcredential-discoverfromexternalsource-slot">
+   <b><a href="#dom-otpcredential-discoverfromexternalsource-slot">#dom-otpcredential-discoverfromexternalsource-slot</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-otpcredential-discoverfromexternalsource-slot">2. Client Side API</a>
+    <li><a href="#ref-for-dom-otpcredential-discoverfromexternalsource-slot①">2.1. The OTPCredential Interface</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="dom-credentialrequestoptions-otp">
    <b><a href="#dom-credentialrequestoptions-otp">#dom-credentialrequestoptions-otp</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-credentialrequestoptions-otp">2.2. CredentialRequestOptions</a>
+    <li><a href="#ref-for-dom-credentialrequestoptions-otp">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a> <a href="#ref-for-dom-credentialrequestoptions-otp①">(2)</a> <a href="#ref-for-dom-credentialrequestoptions-otp②">(3)</a>
+    <li><a href="#ref-for-dom-credentialrequestoptions-otp③">2.2. CredentialRequestOptions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dictdef-otpcredentialrequestoptions">
    <b><a href="#dictdef-otpcredentialrequestoptions">#dictdef-otpcredentialrequestoptions</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dictdef-otpcredentialrequestoptions">2.2. CredentialRequestOptions</a> <a href="#ref-for-dictdef-otpcredentialrequestoptions①">(2)</a>
-    <li><a href="#ref-for-dictdef-otpcredentialrequestoptions②">2.3. OTPCredentialRequestOptions</a>
+    <li><a href="#ref-for-dictdef-otpcredentialrequestoptions">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a>
+    <li><a href="#ref-for-dictdef-otpcredentialrequestoptions①">2.2. CredentialRequestOptions</a> <a href="#ref-for-dictdef-otpcredentialrequestoptions②">(2)</a>
+    <li><a href="#ref-for-dictdef-otpcredentialrequestoptions③">2.3. OTPCredentialRequestOptions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="dom-otpcredentialrequestoptions-transport">
+   <b><a href="#dom-otpcredentialrequestoptions-transport">#dom-otpcredentialrequestoptions-transport</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-otpcredentialrequestoptions-transport">2.3. OTPCredentialRequestOptions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="enumdef-otpcredentialtransporttype">
    <b><a href="#enumdef-otpcredentialtransporttype">#enumdef-otpcredentialtransporttype</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-enumdef-otpcredentialtransporttype">2.3. OTPCredentialRequestOptions</a> <a href="#ref-for-enumdef-otpcredentialtransporttype①">(2)</a>
+    <li><a href="#ref-for-enumdef-otpcredentialtransporttype">2.3. OTPCredentialRequestOptions</a> <a href="#ref-for-enumdef-otpcredentialtransporttype①">(2)</a> <a href="#ref-for-enumdef-otpcredentialtransporttype②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-otpcredentialtransporttype-sms">

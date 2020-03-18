@@ -9,6 +9,8 @@ Repository: WICG/WebOTP
 Editor: Sam Goto, Google Inc. https://google.com, goto@google.com
 Favicon: logo-otp.png
 Markup Shorthands: markdown yes, css no, biblio yes
+Text Macro: FALSE <code>false</code>
+Text Macro: TRUE <code>true</code>
 Abstract: A Javascript API to request one time passwords for verifying credentials (e.g. phone numbers, emails).
 Test Suite: https://github.com/web-platform-tests/wpt/tree/master/sms
 </pre>
@@ -227,6 +229,23 @@ let {code, type} = await navigator.credentials.get({
 # Client Side API # {#API}
 <!-- ============================================================ -->
 
+Websites call <code><a idl for="CredentialsContainer" lt="get()">navigator.credentials.get({otp:..., ...})</a></code> retrieve an OTP, with the user's consent.
+
+The implementation {{CredentialsContainer/get()|navigator.credentials.get()}} looks through all of the interfaces that inherit from {{Credential}} of which {{OTPCredential}} is one. The implementation calls
+<code>OTPCredential.{{OTPCredential/[[CollectFromCredentialStore]]()}}</code> to collect any [=credentials=] that
+should be available without [=user mediation=], and if it does not find
+exactly one of those, it then calls <code>OTPCredential.{{OTPCredential/[[DiscoverFromExternalSource]]()}}</code> to have
+the user select a [=credential source=] and fulfill the request.
+
+Since this specification requires an [=authorization gesture=] to create OTP [=credentials=], the <code>OTPCredential.<dfn
+for="OTPCredential" method>\[[CollectFromCredentialStore]](origin, options, sameOriginWithAncestors)</dfn></code> [=internal method=] inherits the default behavior of
+{{Credential/[[CollectFromCredentialStore]]()|Credential.[[CollectFromCredentialStore]]()}}, of returning an empty set.
+
+This
+{{CredentialsContainer/get()|navigator.credentials.get()}} operation can be aborted by leveraging the {{AbortController}};
+see [[dom#abortcontroller-api-integration]] for detailed instructions.
+
+
 <!-- ============================================================ -->
 ## The OTPCredential Interface ## {#OTPCredential}
 <!-- ============================================================ -->
@@ -234,6 +253,10 @@ let {code, type} = await navigator.credentials.get({
 The {{OTPCredential}} interface extends {{Credential}} and contains
 the attributes that are returned to the caller when a new one time
 password is retrieved.
+
+{{OTPCredential}}'s [=interface object=] inherits {{Credential}}'s implementation of
+{{Credential/[[CollectFromCredentialStore]](origin, options, sameOriginWithAncestors)}}, and defines its own
+implementation of {{OTPCredential/[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)}}.
 
 <xmp class=idl>
 [Exposed=Window, SecureContext]
@@ -254,6 +277,40 @@ interface OTPCredential : Credential {
     ::  The retrieved one time password. 
 
 </dl>
+
+
+<!-- ============================================================ -->
+### The <code><dfn for="OTPCredential" method>\[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)</dfn></code> Method ### {#sctn-discover-from-external-source}
+<!-- ============================================================ -->
+
+<div link-for-hint="PublicKeyCredential/[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)">
+
+This [=internal method=] accepts three arguments:
+
+<dl dfn-type="argument" dfn-for="PublicKeyCredential/[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)">
+
+    :   <dfn>origin</dfn>
+    ::  This argument is the [=relevant settings object=]'s [=environment settings object/origin=], as determined by the
+        calling {{CredentialsContainer/get()}} implementation, i.e., {{CredentialsContainer}}'s <a abstract-op>Request a `Credential`</a> abstract operation.
+
+    :   <dfn>options</dfn>
+    ::  This argument is a {{CredentialRequestOptions}} object whose
+        <code>|options|.{{CredentialRequestOptions/otp}}</code> member contains a {{OTPCredentialRequestOptions}}
+        object specifying the desired attributes of the OTP to retrieve.
+
+    :   <dfn>sameOriginWithAncestors</dfn>
+    ::  This argument is a Boolean value which is [TRUE] if and only if the caller's [=environment settings object=] is
+        [=same-origin with its ancestors=]. It is [FALSE] if caller is cross-origin.
+</dl>
+
+Note: <strong>This algorithm is synchronous:</strong> the {{Promise}} resolution/rejection is handled by
+{{CredentialsContainer/get()|navigator.credentials.get()}}.
+
+When this method is invoked, the user agent MUST execute the following algorithm:
+
+1. Assert: <code>|options|.{{CredentialRequestOptions/otp}}</code> is [=present=].
+1. Let |options| be the value of <code>|options|.{{CredentialRequestOptions/otp}}</code>.
+1. TODO: continue here.
 
 <!-- ============================================================ -->
 ## `CredentialRequestOptions` ## {#CredentialRequestOptions}
@@ -288,7 +345,7 @@ OTP.
 </xmp>
 
 <div dfn-type="dict-member" dfn-for="OTPCredentialRequestOptions">
-    :   <dfn>transports</dfn>
+    :   <dfn>transport</dfn>
     ::  This OPTIONAL member contains a hint as to how the [=server=] might receive the OTP.
         The values SHOULD be members of {{OTPCredentialTransportType}} but [=client platforms=] MUST ignore unknown values.
 </div>
@@ -357,7 +414,7 @@ From a security perspective, there are two considerations with this
 API:
 
 * addressing: preventing crossing an origin boundary between the
-  sending and the receiving of OTPs.
+    sending and the receiving of OTPs.
 * tampering: preventing attacks based on the modification of the message.
 
 <!-- ============================================================ -->
@@ -424,9 +481,9 @@ Your verification code is: MUAHAHAHA
 It is the responsibility for the caller to:
 
 * put in place the checks necessary to verify that the OTP that was received
-  is a valid one, for example:
+    is a valid one, for example:
     * parsing it carefully according to its known formatting expectations
-    (e.g. only alpha numeric values),
+        (e.g. only alpha numeric values),
     * storing and checking OTPs that were sent on a server side database.
 * degrade gracefully when an invalid OTP is received (e.g. re-request one).
 
