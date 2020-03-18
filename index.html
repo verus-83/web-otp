@@ -1225,7 +1225,7 @@ Possible extra rowspan handling
   <meta content="Bikeshed version 8c5cd69b2db6b377093f1f5e0c00b44e6d9e986b" name="generator">
   <link href="http://wicg.github.io/WebOTP" rel="canonical">
   <link href="logo-otp.png" rel="icon">
-  <meta content="8958c77b209534f0cd36a1bbc8a7d40da1ad3ceb" name="document-revision">
+  <meta content="1e610b476dce87920ff61b65fd4f6a3b1dde0cad" name="document-revision">
 <style>
 dl.domintro dt {
     font-family: Menlo, Consolas, "DejaVu Sans Mono", Monaco, monospace;
@@ -1526,8 +1526,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li>
      <a href="#intro"><span class="secno">1</span> <span class="content">Introduction</span></a>
      <ol class="toc">
-      <li><a href="#intro-abort"><span class="secno">1.1</span> <span class="content">Aborting requests</span></a>
-      <li><a href="#intro-wc"><span class="secno">1.2</span> <span class="content">Web Components</span></a>
+      <li><a href="#intro-client"><span class="secno">1.1</span> <span class="content">The client side API</span></a>
+      <li><a href="#intro-server"><span class="secno">1.2</span> <span class="content">The server side API</span></a>
+      <li><a href="#intro-feature-detection"><span class="secno">1.3</span> <span class="content">Feature Detection</span></a>
+      <li><a href="#intro-wc"><span class="secno">1.4</span> <span class="content">Web Components</span></a>
+      <li><a href="#intro-abort"><span class="secno">1.5</span> <span class="content">Abort API</span></a>
      </ol>
     <li>
      <a href="#transports"><span class="secno">2</span> <span class="content">Transports</span></a>
@@ -1563,22 +1566,19 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <h2 class="heading settled" data-level="1" id="intro"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#intro"></a></h2>
    <p><em>This section is non-normative.</em></p>
    <p>Many web sites need to verify credentials (e.g. phone numbers and email addresses) as part of their authentication flows. They currently rely on sending one-time-passwords to these communication channels to be used as proof of ownership. The one-time-password is manually handed back by the user (typically by copying/pasting) to the web app which is onerous and erroneous.</p>
-   <p>This a documentation of a client side javascript API that enables web sites to request OTPs and a set of transport-specific conventions (we start with SMS while leaving the door open to others) that can be used to connet with browsers.</p>
+   <p>This a proposal for a client side javascript API that enables web sites to request OTPs and a set of transport-specific conventions (we start with SMS while leaving the door open to others) that can be used in coordination with browsers.</p>
+   <h3 class="heading settled" data-level="1.1" id="intro-client"><span class="secno">1.1. </span><span class="content">The client side API</span><a class="self-link" href="#intro-client"></a></h3>
    <p>Here is what the client side API looks like.</p>
-   <div class="example" id="example-a4722553">
-    <a class="self-link" href="#example-a4722553"></a> 
-<pre class="language-js highlight"><c- k>if</c-> <c- p>(</c->window<c- p>.</c->OTPCredential<c- p>)</c-> <c- p>{</c->
-  alert<c- p>(</c-><c- u>"feature not available :("</c-><c- p>);</c->
-  <c- k>return</c-><c- p>;</c->
-<c- p>}</c->
-<c- k>try</c-> <c- p>{</c->
-  <c- a>let</c-> <c- p>{</c->otp<c- p>}</c-> <c- o>=</c-> await navigator<c- p>.</c->credentials<c- p>.</c->get<c- p>({</c->otp<c- o>:</c-> <c- p>[</c-><c- u>"sms"</c-><c- p>]});</c->
-  alert<c- p>(</c-><c- u>"otp received! "</c-> <c- o>+</c-> otp<c- p>);</c->
-<c- p>}</c-> <c- k>catch</c-> <c- p>(</c->e<c- p>)</c-> <c- p>{</c->
-  alert<c- p>(</c-><c- u>"timed out!"</c-><c- p>);</c->
-<c- p>}</c->
+   <div class="example" id="example-ca9b1fd1">
+    <a class="self-link" href="#example-ca9b1fd1"></a> 
+<pre class="language-js highlight"><c- a>let</c-> <c- p>{</c->code<c- p>,</c-> type<c- p>}</c-> <c- o>=</c-> await navigator<c- p>.</c->credentials<c- p>.</c->get<c- p>({</c->
+  otp<c- o>:</c-> <c- p>{</c->
+    transport<c- o>:</c-> <c- p>[</c-><c- u>"sms"</c-><c- p>]</c->
+  <c- p>}</c->
+<c- p>});</c->
 </pre>
    </div>
+   <h3 class="heading settled" data-level="1.2" id="intro-server"><span class="secno">1.2. </span><span class="content">The server side API</span><a class="self-link" href="#intro-server"></a></h3>
    <p>A server side formatting convention that enables browsers to route SMSes to them is provided too, and we make an effort to enable other methods of delivery to be defined in the future (e.g. email, pluggable devices, etc).</p>
    <p>And here is the server side formatting convention for SMS messages look like:</p>
    <div class="example" id="example-7552cff1">
@@ -1588,23 +1588,16 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
 @example.com #123ABC78
 </pre>
    </div>
-   <h3 class="heading settled" data-level="1.1" id="intro-abort"><span class="secno">1.1. </span><span class="content">Aborting requests</span><a class="self-link" href="#intro-abort"></a></h3>
-   <div class="example" id="example-1f17d32f">
-    <a class="self-link" href="#example-1f17d32f"></a> Fetching an OTP: 
-<pre class="language-js highlight"><c- a>let</c-> signal <c- o>=</c-> <c- k>new</c-> AbortController<c- p>();</c->
-setTimeout<c- p>(()</c-> <c- p>=></c-> <c- p>{</c->
-  <c- c1>// abort after two minutes</c->
-  signal<c- p>.</c->abort<c- p>();</c->
-<c- p>},</c-> <c- mi>2</c-> <c- o>*</c-> <c- mi>60</c-> <c- o>*</c-> <c- mi>1000</c-><c- p>);</c->
-  
-<c- k>try</c-> <c- p>{</c->
-  <c- a>let</c-> <c- p>{</c->content<c- p>}</c-> <c- o>=</c-> await navigator<c- p>.</c->credentials<c- p>.</c->get<c- p>({</c->otp<c- o>:</c-> <c- kc>true</c-><c- p>,</c-> abort<c- o>:</c-> signal<c- p>});</c->
-<c- p>}</c-> <c- k>catch</c-> <c- p>(</c->e<c- p>)</c-> <c- p>{</c->
-  <c- c1>// deal with errors</c->
+   <h3 class="heading settled" data-level="1.3" id="intro-feature-detection"><span class="secno">1.3. </span><span class="content">Feature Detection</span><a class="self-link" href="#intro-feature-detection"></a></h3>
+   <div class="example" id="example-41ef25d5">
+    <a class="self-link" href="#example-41ef25d5"></a> 
+<pre class="language-js highlight"><c- k>if</c-> <c- p>(</c-><c- o>!</c->window<c- p>.</c->OTPCredential<c- p>)</c-> <c- p>{</c->
+  <c- c1>// feature not available</c->
+  <c- k>return</c-><c- p>;</c->
 <c- p>}</c->
 </pre>
    </div>
-   <h3 class="heading settled" data-level="1.2" id="intro-wc"><span class="secno">1.2. </span><span class="content">Web Components</span><a class="self-link" href="#intro-wc"></a></h3>
+   <h3 class="heading settled" data-level="1.4" id="intro-wc"><span class="secno">1.4. </span><span class="content">Web Components</span><a class="self-link" href="#intro-wc"></a></h3>
    <p>Here is an example of how to annotate an input field declaratively to receive an OTP:</p>
    <div class="example" id="example-dfeb4a55">
     <a class="self-link" href="#example-dfeb4a55"></a> Web Component Polyfills 
@@ -1615,24 +1608,42 @@ setTimeout<c- p>(()</c-> <c- p>=></c-> <c- p>{</c->
 </pre>
    </div>
    <p>And here is an example of how a framework could implement it using web components:</p>
-   <div class="example" id="example-b2ae8f71">
-    <a class="self-link" href="#example-b2ae8f71"></a> Web Component Polyfills 
+   <div class="example" id="example-b58563d9">
+    <a class="self-link" href="#example-b58563d9"></a> Web Component Polyfills 
 <pre class="language-js highlight">customElements<c- p>.</c->define<c- p>(</c-><c- u>"one-time-code"</c-><c- p>,</c->
   <c- kr>class</c-> <c- kr>extends</c-> HTMLInputElement <c- p>{</c->
     connectedCallback<c- p>()</c-> <c- p>{</c->
       <c- k>this</c-><c- p>.</c->receive<c- p>();</c->
     <c- p>}</c->
     async receive<c- p>()</c-> <c- p>{</c->
-      <c- k>try</c-> <c- p>{</c->
-        <c- a>let</c-> <c- p>{</c->otp<c- p>}</c-> <c- o>=</c-> await navigator<c- p>.</c->credentials<c- p>.</c->get<c- p>({</c->otp<c- o>:</c-> <c- kc>true</c-><c- p>});</c->
-        <c- k>this</c-><c- p>.</c->value <c- o>=</c-> otp<c- p>;</c->
-        <c- k>this</c-><c- p>.</c->form<c- p>.</c->submit<c- p>();</c->
-      <c- p>}</c-> <c- k>catch</c-> <c- p>(</c->e<c- p>)</c-> <c- p>{</c->
-        console<c- p>.</c->log<c- p>(</c->e<c- p>);</c->
-      <c- p>}</c->
+      <c- a>let</c-> <c- p>{</c->code<c- p>,</c-> type<c- p>}</c-> <c- o>=</c-> await navigator<c- p>.</c->credentials<c- p>.</c->get<c- p>({</c->
+        otp<c- o>:</c-> <c- p>{</c->
+         transport<c- o>:</c-> <c- p>[</c-><c- u>"sms"</c-><c- p>]</c->
+        <c- p>}</c->
+      <c- p>});</c->
+      <c- k>this</c-><c- p>.</c->value <c- o>=</c-> otp<c- p>;</c->
+      <c- k>this</c-><c- p>.</c->form<c- p>.</c->submit<c- p>();</c->
     <c- p>}</c->
   <c- p>},</c-> <c- p>{</c->
     <c- kr>extends</c-><c- o>:</c-> <c- u>"input"</c->
+<c- p>});</c->
+</pre>
+   </div>
+   <h3 class="heading settled" data-level="1.5" id="intro-abort"><span class="secno">1.5. </span><span class="content">Abort API</span><a class="self-link" href="#intro-abort"></a></h3>
+   <div class="example" id="example-9a132865">
+    <a class="self-link" href="#example-9a132865"></a> Fetching an OTP: 
+<pre class="language-js highlight"><c- a>let</c-> signal <c- o>=</c-> <c- k>new</c-> AbortController<c- p>();</c->
+
+setTimeout<c- p>(()</c-> <c- p>=></c-> <c- p>{</c->
+  <c- c1>// abort after two minutes</c->
+  signal<c- p>.</c->abort<c- p>();</c->
+<c- p>},</c-> <c- mi>2</c-> <c- o>*</c-> <c- mi>60</c-> <c- o>*</c-> <c- mi>1000</c-><c- p>);</c->
+  
+<c- a>let</c-> <c- p>{</c->code<c- p>,</c-> type<c- p>}</c-> <c- o>=</c-> await navigator<c- p>.</c->credentials<c- p>.</c->get<c- p>({</c->
+  abort<c- o>:</c-> signal<c- p>,</c->
+  otp<c- o>:</c-> <c- p>{</c->
+    transport<c- o>:</c-> <c- p>[</c-><c- u>"sms"</c-><c- p>]</c->
+  <c- p>}</c->
 <c- p>});</c->
 </pre>
    </div>

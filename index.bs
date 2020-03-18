@@ -52,24 +52,27 @@ dl.domintro dt code {
 
 Many web sites need to verify credentials (e.g. phone numbers and email addresses) as part of their authentication flows. They currently rely on sending one-time-passwords to these communication channels to be used as proof of ownership. The one-time-password is manually handed back by the user (typically by copying/pasting) to the web app which is onerous and erroneous.
 
-This a documentation of a client side javascript API that enables web sites to request OTPs and a set of transport-specific conventions (we start with SMS while leaving the door open to others) that can be used to connet with browsers.
+This a proposal for a client side javascript API that enables web sites to request OTPs and a set of transport-specific conventions (we start with SMS while leaving the door open to others) that can be used in coordination with browsers.
+
+<!-- ============================================================ -->
+## The client side API ## {#intro-client}
+<!-- ============================================================ -->
 
 Here is what the client side API looks like.
 
 <div class=example>
 ```js
-if (window.OTPCredential) {
-  alert("feature not available :(");
-  return;
-}
-try {
-  let {otp} = await navigator.credentials.get({otp: ["sms"]});
-  alert("otp received! " + otp);
-} catch (e) {
-  alert("timed out!");
-}
+let {code, type} = await navigator.credentials.get({
+  otp: {
+    transport: ["sms"]
+  }
+});
 ```
 </div>
+
+<!-- ============================================================ -->
+## The server side API ## {#intro-server}
+<!-- ============================================================ -->
 
 A server side formatting convention that enables browsers to route SMSes to them is provided too, and we make an effort to enable other methods of delivery to be defined in the future (e.g. email, pluggable devices, etc).
 
@@ -84,26 +87,18 @@ Your verification code is: 123ABC78
 </div>
 
 <!-- ============================================================ -->
-## Aborting requests ## {#intro-abort}
+## Feature Detection ## {#intro-feature-detection}
 <!-- ============================================================ -->
 
 <div class=example>
-Fetching an OTP:
-
 ```js
-let signal = new AbortController();
-setTimeout(() => {
-  // abort after two minutes
-  signal.abort();
-}, 2 * 60 * 1000);
-  
-try {
-  let {content} = await navigator.credentials.get({otp: true, abort: signal});
-} catch (e) {
-  // deal with errors
+if (!window.OTPCredential) {
+  // feature not available
+  return;
 }
 ```
 </div>
+
 
 <!-- ============================================================ -->
 ## Web Components ## {#intro-wc}
@@ -134,16 +129,40 @@ customElements.define("one-time-code",
       this.receive();
     }
     async receive() {
-      try {
-        let {otp} = await navigator.credentials.get({otp: true});
-        this.value = otp;
-        this.form.submit();
-      } catch (e) {
-        console.log(e);
-      }
+      let {code, type} = await navigator.credentials.get({
+        otp: {
+         transport: ["sms"]
+        }
+      });
+      this.value = otp;
+      this.form.submit();
     }
   }, {
     extends: "input"
+});
+```
+</div>
+
+<!-- ============================================================ -->
+## Abort API ## {#intro-abort}
+<!-- ============================================================ -->
+
+<div class=example>
+Fetching an OTP:
+
+```js
+let signal = new AbortController();
+
+setTimeout(() => {
+  // abort after two minutes
+  signal.abort();
+}, 2 * 60 * 1000);
+  
+let {code, type} = await navigator.credentials.get({
+  abort: signal,
+  otp: {
+    transport: ["sms"]
+  }
 });
 ```
 </div>
