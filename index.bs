@@ -224,11 +224,11 @@ let {code, type} = await navigator.credentials.get({
 </div>
 
 <!-- ============================================================ -->
-# WebOTP API # {#API}
+# Client Side API # {#API}
 <!-- ============================================================ -->
 
 <!-- ============================================================ -->
-## <dfn interface>OTPCredential</dfn> Interface ## {#OTPCredential}
+## The OTPCredential Interface ## {#OTPCredential}
 <!-- ============================================================ -->
 
 The {{OTPCredential}} interface extends {{Credential}} and contains
@@ -256,20 +256,64 @@ interface OTPCredential : Credential {
 </dl>
 
 <!-- ============================================================ -->
-### `CredentialRequestOptions` Dictionary Extension ### {#sctn-credentialrequestoptions-extension}
+## `CredentialRequestOptions` ## {#CredentialRequestOptions}
 <!-- ============================================================ -->
 
-To support obtaining assertions via {{CredentialsContainer/get()|navigator.credentials.get()}}, this document extends the
-{{CredentialRequestOptions}} dictionary as follows:
+To support obtaining OTPs via {{CredentialsContainer/get()|navigator.credentials.get()}},
+this document extends the {{CredentialRequestOptions}} dictionary as follows:
 
 <xmp class="idl">
     partial dictionary CredentialRequestOptions {
-        PublicKeyCredentialRequestOptions publicKey;
+        OTPCredentialRequestOptions otp;
     };
 </xmp>
 
+<div dfn-type="dict-member" dfn-for="CredentialRequestOptions">
+    :   <dfn>otp</dfn>
+    ::  This OPTIONAL member is used to make WebOTP requests.
+</div>
+
 <!-- ============================================================ -->
-## Transports ## {#transports}
+## `OTPCredentialRequestOptions` ## {#OTPCredentialRequestOptions}
+<!-- ============================================================ -->
+
+The {{OTPCredentialRequestOptions}} dictionary supplies
+{{CredentialsContainer/get()|navigator.credentials.get()}} with the data it needs to retrieve an
+OTP.
+
+<xmp class="idl">
+    dictionary OTPCredentialRequestOptions {
+      sequence<OTPCredentialTransportType> transport = [];
+    };
+</xmp>
+
+<div dfn-type="dict-member" dfn-for="OTPCredentialRequestOptions">
+    :   <dfn>transports</dfn>
+    ::  This OPTIONAL member contains a hint as to how the [=server=] might receive the OTP.
+        The values SHOULD be members of {{OTPCredentialTransportType}} but [=client platforms=] MUST ignore unknown values.
+</div>
+
+<!-- ============================================================ -->
+## `OTPCredentialTransportType` ## {#enum-transport}
+<!-- ============================================================ -->
+
+<xmp class="idl">
+    enum OTPCredentialTransportType {
+        "sms",
+    };
+</xmp>
+
+<div dfn-type="enum-value" dfn-for="OTPCredentialTransportType">
+    User Agents may implement various transport mechanisms to allow
+    the retrieval of OTPs. This enumeration defines hints as to how
+    user agents may communicate with the transport mechanisms. 
+
+    :   <dfn>sms</dfn>
+    ::  Indicates that the OTP is expected to arrive via SMS.
+</div>
+
+<!-- ============================================================ -->
+# Transports # {#transports}
 <!-- ============================================================ -->
 
 We expect a variety of different transport mechanisms to enable OTPs
@@ -283,7 +327,7 @@ delivered to browsers, but we leave the API surface to be extensible
 to other transports.
 
 <!-- ============================================================ -->
-### SMS ### {#transports-sms}
+## SMS ## {#transports-sms}
 <!-- ============================================================ -->
 
 One of the most commonly used transport mechanisms for OTP is via
