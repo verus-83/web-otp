@@ -229,22 +229,20 @@ let {code, type} = await navigator.credentials.get({
 # Client Side API # {#API}
 <!-- ============================================================ -->
 
-Websites call <code><a idl for="CredentialsContainer" lt="get()">navigator.credentials.get({otp:..., ...})</a></code> retrieve an OTP, with the user's consent.
+Websites call <code><a idl for="CredentialsContainer" lt="get()">navigator.credentials.get({otp:..., ...})</a></code> to retrieve an OTP.
 
-The implementation {{CredentialsContainer/get()|navigator.credentials.get()}} looks through all of the interfaces that inherit from {{Credential}} of which {{OTPCredential}} is one. The implementation calls
+The algorithm of {{CredentialsContainer/get()|navigator.credentials.get()}} looks through all of the interfaces that inherit from {{Credential}} in the <a abstract-op>Request a `Credential`</a> abstract operation.
+
+In that operation, it finds {{OTPCredential}} which inherits from {{Credential}}. It calls
 <code>OTPCredential.{{OTPCredential/[[CollectFromCredentialStore]]()}}</code> to collect any [=credentials=] that
 should be available without [=user mediation=], and if it does not find
 exactly one of those, it then calls <code>OTPCredential.{{OTPCredential/[[DiscoverFromExternalSource]]()}}</code> to have
-the user select a [=credential source=] and fulfill the request.
+the user select a credential source and fulfill the request.
 
-Since this specification requires an [=authorization gesture=] to create OTP [=credentials=], the <code>OTPCredential.<dfn
-for="OTPCredential" method>\[[CollectFromCredentialStore]](origin, options, sameOriginWithAncestors)</dfn></code> [=internal method=] inherits the default behavior of
+Since this specification requires an [=authorization gesture=] to create OTP [=credentials=], the <code>OTPCredential.{{OTPCredential/[[CollectFromCredentialStore]]()}}</code> [=internal method=] inherits the default behavior of
 {{Credential/[[CollectFromCredentialStore]]()|Credential.[[CollectFromCredentialStore]]()}}, of returning an empty set.
 
-This
-{{CredentialsContainer/get()|navigator.credentials.get()}} operation can be aborted by leveraging the {{AbortController}};
-see [[dom#abortcontroller-api-integration]] for detailed instructions.
-
+It is then the responsibility of <code>OTPCredential.{{OTPCredential/[[DiscoverFromExternalSource]]()}}</code> to provide an OTP.
 
 <!-- ============================================================ -->
 ## The OTPCredential Interface ## {#OTPCredential}
@@ -283,7 +281,7 @@ interface OTPCredential : Credential {
 ### The <code><dfn for="OTPCredential" method>\[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)</dfn></code> Method ### {#sctn-discover-from-external-source}
 <!-- ============================================================ -->
 
-<div link-for-hint="PublicKeyCredential/[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)">
+This method is called every time <code><a idl for="CredentialsContainer" lt="get()">navigator.credentials.get({otp:..., ...})</a></code> and is responsible for returning an OTP when one is requested (i.e. when <code>|options|.{{CredentialRequestOptions/otp}}</code> is passed).
 
 This [=internal method=] accepts three arguments:
 
@@ -310,7 +308,23 @@ When this method is invoked, the user agent MUST execute the following algorithm
 
 1. Assert: <code>|options|.{{CredentialRequestOptions/otp}}</code> is [=present=].
 1. Let |options| be the value of <code>|options|.{{CredentialRequestOptions/otp}}</code>.
+1. Let |callerOrigin| be {{OTPCredential/[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)/origin}}.
+    If |callerOrigin| is an [=opaque origin=], return a {{DOMException}} whose name is "{{NotAllowedError}}", and terminate this algorithm.
+1. Let |effectiveDomain| be the |callerOrigin|'s [=effective domain=].
+    If [=effective domain=] is not a [=valid domain=], then return a
+    {{DOMException}} whose name is "{{SecurityError}}" and terminate this algorithm.
+
+        Note: An [=effective domain=] may resolve to a [=host=], which can be represented in various manners,
+        such as [=domain=], [=ipv4 address=], [=ipv6 address=], [=opaque host=], or [=empty host=].
+        Only the [=domain=] format of [=host=] is allowed here. This is for simplification and also is
+        in recognition of various issues with using direct IP address identification in concert with
+        PKI-based security.
+1. If the <code>|options|.{{CredentialRequestOptions/signal}}</code> is [=present=] and its
+    [=AbortSignal/aborted flag=] is set to [TRUE], return a {{DOMException}} whose name is "{{AbortError}}"
+    and terminate this algorithm.
 1. TODO: continue here.
+
+During the above process, the user agent SHOULD show some UI to the user to guide them in the process of sharing the OTP with the origin.
 
 <!-- ============================================================ -->
 ## `CredentialRequestOptions` ## {#CredentialRequestOptions}
@@ -370,7 +384,7 @@ OTP.
 </div>
 
 <!-- ============================================================ -->
-# Server Side API # {#transports}
+# Transports # {#transports}
 <!-- ============================================================ -->
 
 We expect a variety of different transport mechanisms to enable OTPs
