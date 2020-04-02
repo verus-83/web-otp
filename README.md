@@ -3,7 +3,7 @@
 This repository documents an API for accessing one time passwords to verify credentials (e.g. phone numbers).
 
 * The [explainer](explainer.md) is a developer-oriented preview of the API.
-* the [specification draft](http://samuelgoto.github.io/WebOTP) is aimed at browser developers.
+* the [specification draft](https://wicg.github.io//WebOTP/index.html) is aimed at browser developers.
 
 The API has a [test suite](https://github.com/web-platform-tests/wpt/tree/master/sms) in the Web Platform Test project.
 
