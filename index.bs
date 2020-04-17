@@ -68,7 +68,7 @@ dl.domintro dt code {
 
 Many web sites need to verify credentials (e.g. phone numbers and
 email addresses) as part of their authentication flows. They currently
-rely on sending one-time-passwords to these communication channels to
+rely on sending one-time-passwords (OTP) to these communication channels to
 be used as proof of ownership. The one-time-password is manually
 handed back by the user (typically by copying/pasting) to the web app
 which is onerous and erroneous.
@@ -482,7 +482,7 @@ it gets routed appropriately.
 There isn't any built-in cryptographic guarantee that the OTP that is
 being handed back by this API hasn't been tampered with. For example,
 an attacker could send an SMS to the user's phone with an arbitrary
-origin which the agent happilly passes back to the requesting call. 
+origin which the agent happily passes back to the requesting call. 
 
 <div class=example>
 ```
@@ -513,7 +513,7 @@ Specifically, this API allows the programatic verification of personally
 identifiable attributes of the user, for example email addresses and phone
 numbers.
 
-The attack vector that is most frequently raised is a targetted attack:
+The attack vector that is most frequently raised is a targeted attack:
 websites trying to find a **very** specific user accross all of its user
 base. In this attack, if left unattended, a website can use this API to
 try to find a **specific** user that owns a **specific** phone number by
@@ -526,7 +526,7 @@ information, but rather with its **verification**. That is, this API helps
 help acquiring the phone number in the first place (it assumes that the
 website already has access to it).
 
-Nonetheless, The verification of the possession of these attributes is extra
+Nonetheless, the verification of the possession of these attributes is extra
 information about the user and should be handled responsibly by a user
 agent, typically via **permission prompts** before handing back the OTP
 to the website.
