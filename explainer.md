@@ -3,7 +3,7 @@
 
 ## TL;DR;
 
-Many web sites rely on verifying phone numbers via sending one-time-passwords via SMS, which instructs users to copy/paste it into the website.
+Many web sites rely on verifying phone numbers via sending one-time-passwords (OTP) via SMS, which instructs users to copy/paste it into the website.
 
 This a proposal for (a) a client side javascript API that enables web sites to request OTPs and (b) a server side formatting convention that enables browsers to route SMSes to them. Here is what the client side API looks like:
 
