@@ -109,18 +109,7 @@ of these transport mechanism, a server side convention is set in
 place to guarantee that the OTP is delivered safely and
 programatically.
 
-For SMS, for example, an SMS formatting convention is established to
-allow agents to get programatic access to the otherwise human-readable
-SMS. This specific convention gives agents access to (a) the OTP and
-(b) the intended origin destination of the message:
-
-<div class=example>
-```
-Your verification code is: 123ABC78
-
-@example.com #123ABC78
-```
-</div>
+For SMS, for example, servers should send [=origin-bound one-time code messages=] to clients. [[sms-one-time-codes]]
 
 <!-- ============================================================ -->
 ## Feature Detection ## {#intro-feature-detection}
@@ -393,9 +382,8 @@ to be received, most notably via SMS, email and hardware devices.
 Each of these transport mechanisms will need their own conventions on
 how to provide OTPs to the browser.
 
-In this draft, we start explicitly specifying how SMS OTPs can be
-delivered to browsers, but we leave the API surface to be extensible
-to other transports.
+In this draft, we leave the API surface to be extensible to any number
+of transports.
 
 <!-- ============================================================ -->
 ## SMS ## {#transports-sms}
@@ -406,19 +394,7 @@ SMS messages, allowing developers to verify phone numbers. They
 are typically sent embedded in an SMS message, which gets copied and
 pasted by users.
 
-What follows is a definition of a machine-readable formatting convention
-that servers can use to send SMS messages that browsers can intercept
-and route securely to the right origin.
-
-Here is an example of such convention:
-
-<div class=example>
-```
-Your verification code is: 123ABC78
-
-@example.com #123ABC78
-```
-</div>
+[[sms-one-time-codes]] defines [=origin-bound one-time code messages=], a format for sending OTPs over SMS and associating them with origins.
 
 <!-- ============================================================ -->
 # Security # {#security}
@@ -461,16 +437,8 @@ Each transport mechanism is responsible for guaranteeing that the
 browser has enough information to route the OTP appropriately to the
 intended origin.
 
-For SMS, for example, the addressing scheme explicitly names the
-intented origin (in this case, example.com):
-
-<div class=example>
-```
-Your verification code is: 123ABC78
-
-@example.com #123ABC78
-```
-</div>
+For example, [=origin-bound one-time code messages=] explicitly
+identify the origin on which the OTP can be used.
 
 The addressing scheme must be enforced by the agent to guarantee that
 it gets routed appropriately.
@@ -481,8 +449,9 @@ it gets routed appropriately.
 
 There isn't any built-in cryptographic guarantee that the OTP that is
 being handed back by this API hasn't been tampered with. For example,
-an attacker could send an SMS to the user's phone with an arbitrary
-origin which the agent happily passes back to the requesting call. 
+an attacker could send an [=origin-bound one-time code message=] to the
+user's phone with an arbitrary origin which the agent happilly passes
+back to the requesting call.
 
 <div class=example>
 ```
@@ -518,7 +487,7 @@ websites trying to find a **very** specific user accross all of its user
 base. In this attack, if left unattended, a website can use this API to
 try to find a **specific** user that owns a **specific** phone number by
 sending all / some (depending on the confidence level) of its users an
-SMS and detecting when one is received. 
+[=origin-bound one-time code message=] and detecting when one is received.
 
 Notably, this API doesn't help with the **acquisition** of the personal
 information, but rather with its **verification**. That is, this API helps

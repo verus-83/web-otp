@@ -1222,10 +1222,10 @@ Possible extra rowspan handling
 	}
 </style>
   <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 8c5cd69b2db6b377093f1f5e0c00b44e6d9e986b" name="generator">
+  <meta content="Bikeshed version 2891b22e, updated Thu Mar 26 15:21:43 2020 -0700" name="generator">
   <link href="http://wicg.github.io/WebOTP" rel="canonical">
   <link href="logo-otp.png" rel="icon">
-  <meta content="67f6c79659f25cd7e30a7f3c3b97fb6a4dc90b46" name="document-revision">
+  <meta content="5e77cf1cead149a8222a8f00d3ed688135ef1026" name="document-revision">
 <style>
 dl.domintro dt {
     font-family: Menlo, Consolas, "DejaVu Sans Mono", Monaco, monospace;
@@ -1240,91 +1240,6 @@ dl.domintro dt code {
     font-size: inherit;
 }
 </style>
-<style>/* style-md-lists */
-
-/* This is a weird hack for me not yet following the commonmark spec
-   regarding paragraph and lists. */
-[data-md] > :first-child {
-    margin-top: 0;
-}
-[data-md] > :last-child {
-    margin-bottom: 0;
-}</style>
-<style>/* style-selflinks */
-
-.heading, .issue, .note, .example, li, dt {
-    position: relative;
-}
-a.self-link {
-    position: absolute;
-    top: 0;
-    left: calc(-1 * (3.5rem - 26px));
-    width: calc(3.5rem - 26px);
-    height: 2em;
-    text-align: center;
-    border: none;
-    transition: opacity .2s;
-    opacity: .5;
-}
-a.self-link:hover {
-    opacity: 1;
-}
-.heading > a.self-link {
-    font-size: 83%;
-}
-li > a.self-link {
-    left: calc(-1 * (3.5rem - 26px) - 2em);
-}
-dfn > a.self-link {
-    top: auto;
-    left: auto;
-    opacity: 0;
-    width: 1.5em;
-    height: 1.5em;
-    background: gray;
-    color: white;
-    font-style: normal;
-    transition: opacity .2s, background-color .2s, color .2s;
-}
-dfn:hover > a.self-link {
-    opacity: 1;
-}
-dfn > a.self-link:hover {
-    color: black;
-}
-
-a.self-link::before            { content: "¶"; }
-.heading > a.self-link::before { content: "§"; }
-dfn > a.self-link::before      { content: "#"; }</style>
-<style>/* style-counters */
-
-body {
-    counter-reset: example figure issue;
-}
-.issue {
-    counter-increment: issue;
-}
-.issue:not(.no-marker)::before {
-    content: "Issue " counter(issue);
-}
-
-.example {
-    counter-increment: example;
-}
-.example:not(.no-marker)::before {
-    content: "Example " counter(example);
-}
-.invalid.example:not(.no-marker)::before,
-.illegal.example:not(.no-marker)::before {
-    content: "Invalid Example" counter(example);
-}
-
-figcaption {
-    counter-increment: figure;
-}
-figcaption:not(.no-marker)::before {
-    content: "Figure " counter(figure) " ";
-}</style>
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -1387,6 +1302,35 @@ pre .property::before, pre .property::after {
 [data-link-type=biblio] {
     white-space: pre;
 }</style>
+<style>/* style-counters */
+
+body {
+    counter-reset: example figure issue;
+}
+.issue {
+    counter-increment: issue;
+}
+.issue:not(.no-marker)::before {
+    content: "Issue " counter(issue);
+}
+
+.example {
+    counter-increment: example;
+}
+.example:not(.no-marker)::before {
+    content: "Example " counter(example);
+}
+.invalid.example:not(.no-marker)::before,
+.illegal.example:not(.no-marker)::before {
+    content: "Invalid Example" counter(example);
+}
+
+figcaption {
+    counter-increment: figure;
+}
+figcaption:not(.no-marker)::before {
+    content: "Figure " counter(figure) " ";
+}</style>
 <style>/* style-dfn-panel */
 
 .dfn-panel {
@@ -1424,6 +1368,62 @@ pre .property::before, pre .property::after {
 
 .dfn-paneled { cursor: pointer; }
 </style>
+<style>/* style-md-lists */
+
+/* This is a weird hack for me not yet following the commonmark spec
+   regarding paragraph and lists. */
+[data-md] > :first-child {
+    margin-top: 0;
+}
+[data-md] > :last-child {
+    margin-bottom: 0;
+}</style>
+<style>/* style-selflinks */
+
+.heading, .issue, .note, .example, li, dt {
+    position: relative;
+}
+a.self-link {
+    position: absolute;
+    top: 0;
+    left: calc(-1 * (3.5rem - 26px));
+    width: calc(3.5rem - 26px);
+    height: 2em;
+    text-align: center;
+    border: none;
+    transition: opacity .2s;
+    opacity: .5;
+}
+a.self-link:hover {
+    opacity: 1;
+}
+.heading > a.self-link {
+    font-size: 83%;
+}
+li > a.self-link {
+    left: calc(-1 * (3.5rem - 26px) - 2em);
+}
+dfn > a.self-link {
+    top: auto;
+    left: auto;
+    opacity: 0;
+    width: 1.5em;
+    height: 1.5em;
+    background: gray;
+    color: white;
+    font-style: normal;
+    transition: opacity .2s, background-color .2s, color .2s;
+}
+dfn:hover > a.self-link {
+    opacity: 1;
+}
+dfn > a.self-link:hover {
+    color: black;
+}
+
+a.self-link::before            { content: "¶"; }
+.heading > a.self-link::before { content: "§"; }
+dfn > a.self-link::before      { content: "#"; }</style>
 <style>/* style-syntax-highlighting */
 pre.idl.highlight { color: #708090; }
 .highlight:not(.idl) { background: hsl(24, 20%, 95%); }
@@ -1486,7 +1486,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Web OTP API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2020-03-26">26 March 2020</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2020-04-06">6 April 2020</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1609,17 +1609,7 @@ OTPs to the client via the requested transport mechanisms. For each
 of these transport mechanism, a server side convention is set in
 place to guarantee that the OTP is delivered safely and
 programatically.</p>
-   <p>For SMS, for example, an SMS formatting convention is established to
-allow agents to get programatic access to the otherwise human-readable
-SMS. This specific convention gives agents access to (a) the OTP and
-(b) the intended origin destination of the message:</p>
-   <div class="example" id="example-7552cff1">
-    <a class="self-link" href="#example-7552cff1"></a> 
-<pre>Your verification code is: 123ABC78
-
-@example.com #123ABC78
-</pre>
-   </div>
+   <p>For SMS, for example, servers should send <a data-link-type="dfn">origin-bound one-time code messages</a> to clients. <a data-link-type="biblio" href="#biblio-sms-one-time-codes">[sms-one-time-codes]</a></p>
    <h3 class="heading settled" data-level="1.3" id="intro-feature-detection"><span class="secno">1.3. </span><span class="content">Feature Detection</span><a class="self-link" href="#intro-feature-detection"></a></h3>
    <p>Not all user agents necessarily need to implement the WebOTP API at
 the exact same moment in time, so websites need a mechanism to detect
@@ -1753,7 +1743,7 @@ calling <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/we
    <p>When this method is invoked, the user agent MUST execute the following algorithm:</p>
    <ol>
     <li data-md>
-     <p class="assertion">Assert: <code><var>options</var>.<code class="idl"><a data-link-type="idl" href="#dom-credentialrequestoptions-otp" id="ref-for-dom-credentialrequestoptions-otp②">otp</a></code></code> is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present">present</a>.</p>
+     <p class="assertion">Assert: <code><var>options</var>.<code class="idl"><a data-link-type="idl" href="#dom-credentialrequestoptions-otp" id="ref-for-dom-credentialrequestoptions-otp②">otp</a></code></code> is <a data-link-type="dfn">present</a>.</p>
     <li data-md>
      <p>Let <var>options</var> be the value of <code><var>options</var>.<code class="idl"><a data-link-type="idl" href="#dom-credentialrequestoptions-otp" id="ref-for-dom-credentialrequestoptions-otp③">otp</a></code></code>.</p>
     <li data-md>
@@ -1762,13 +1752,13 @@ If <var>callerOrigin</var> is an <a data-link-type="dfn" href="https://html.spec
     <li data-md>
      <p>Let <var>effectiveDomain</var> be the <var>callerOrigin</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-effective-domain" id="ref-for-concept-origin-effective-domain">effective domain</a>.
 If <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-effective-domain" id="ref-for-concept-origin-effective-domain①">effective domain</a> is not a <a data-link-type="dfn">valid domain</a>, then return a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code> whose name is "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#securityerror" id="ref-for-securityerror">SecurityError</a></code>" and terminate this algorithm.</p>
-     <p class="note" role="note"><span>Note:</span> An <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-effective-domain" id="ref-for-concept-origin-effective-domain②">effective domain</a> may resolve to a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-host" id="ref-for-concept-host">host</a>, which can be represented in various manners,
-    such as <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-domain" id="ref-for-concept-domain">domain</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-ipv4" id="ref-for-concept-ipv4">ipv4 address</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-ipv6" id="ref-for-concept-ipv6">ipv6 address</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#opaque-host" id="ref-for-opaque-host">opaque host</a>, or <a data-link-type="dfn" href="https://url.spec.whatwg.org/#empty-host" id="ref-for-empty-host">empty host</a>.
-    Only the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-domain" id="ref-for-concept-domain①">domain</a> format of <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-host" id="ref-for-concept-host①">host</a> is allowed here. This is for simplification and also is
+     <p class="note" role="note"><span>Note:</span> An <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-effective-domain" id="ref-for-concept-origin-effective-domain②">effective domain</a> may resolve to a <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-documentfragment-host" id="ref-for-concept-documentfragment-host">host</a>, which can be represented in various manners,
+    such as <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-domain" id="ref-for-concept-origin-domain">domain</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-ipv4" id="ref-for-concept-ipv4">ipv4 address</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-ipv6" id="ref-for-concept-ipv6">ipv6 address</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#opaque-host" id="ref-for-opaque-host">opaque host</a>, or <a data-link-type="dfn" href="https://url.spec.whatwg.org/#empty-host" id="ref-for-empty-host">empty host</a>.
+    Only the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-domain" id="ref-for-concept-origin-domain①">domain</a> format of <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-documentfragment-host" id="ref-for-concept-documentfragment-host①">host</a> is allowed here. This is for simplification and also is
     in recognition of various issues with using direct IP address identification in concert with
     PKI-based security.</p>
     <li data-md>
-     <p>If the <code><var>options</var>.<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credentialrequestoptions-signal" id="ref-for-dom-credentialrequestoptions-signal">signal</a></code></code> is <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-present" id="ref-for-dfn-present①">present</a> and its <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-aborted-flag" id="ref-for-abortsignal-aborted-flag">aborted flag</a> is set to <code>true</code>, return a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException②">DOMException</a></code> whose name is "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#aborterror" id="ref-for-aborterror">AbortError</a></code>"
+     <p>If the <code><var>options</var>.<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credentialrequestoptions-signal" id="ref-for-dom-credentialrequestoptions-signal">signal</a></code></code> is <a data-link-type="dfn">present</a> and its <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-aborted-flag" id="ref-for-abortsignal-aborted-flag">aborted flag</a> is set to <code>true</code>, return a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException②">DOMException</a></code> whose name is "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#aborterror" id="ref-for-aborterror">AbortError</a></code>"
 and terminate this algorithm.</p>
     <li data-md>
      <p>TODO(goto): figure out how to connect the dots here with the transport algorithms.</p>
@@ -1823,25 +1813,14 @@ The values SHOULD be members of <code class="idl"><a data-link-type="idl" href="
 to be received, most notably via SMS, email and hardware devices.</p>
    <p>Each of these transport mechanisms will need their own conventions on
 how to provide OTPs to the browser.</p>
-   <p>In this draft, we start explicitly specifying how SMS OTPs can be
-delivered to browsers, but we leave the API surface to be extensible
-to other transports.</p>
+   <p>In this draft, we leave the API surface to be extensible to any number
+of transports.</p>
    <h3 class="heading settled" data-level="3.1" id="transports-sms"><span class="secno">3.1. </span><span class="content">SMS</span><a class="self-link" href="#transports-sms"></a></h3>
    <p>One of the most commonly used transport mechanisms for OTP is via
 SMS messages, allowing developers to verify phone numbers. They
 are typically sent embedded in an SMS message, which gets copied and
 pasted by users.</p>
-   <p>What follows is a definition of a machine-readable formatting convention
-that servers can use to send SMS messages that browsers can intercept
-and route securely to the right origin.</p>
-   <p>Here is an example of such convention:</p>
-   <div class="example" id="example-7552cff1①">
-    <a class="self-link" href="#example-7552cff1①"></a> 
-<pre>Your verification code is: 123ABC78
-
-@example.com #123ABC78
-</pre>
-   </div>
+   <p><a data-link-type="biblio" href="#biblio-sms-one-time-codes">[sms-one-time-codes]</a> defines <a data-link-type="dfn">origin-bound one-time code messages</a>, a format for sending OTPs over SMS and associating them with origins.</p>
    <h2 class="heading settled" data-level="4" id="security"><span class="secno">4. </span><span class="content">Security</span><a class="self-link" href="#security"></a></h2>
    <p>From a security perspective, there are two considerations with this
 API:</p>
@@ -1875,22 +1854,16 @@ entity its sending the SMS).</p>
    <p>Each transport mechanism is responsible for guaranteeing that the
 browser has enough information to route the OTP appropriately to the
 intended origin.</p>
-   <p>For SMS, for example, the addressing scheme explicitly names the
-intented origin (in this case, example.com):</p>
-   <div class="example" id="example-7552cff1②">
-    <a class="self-link" href="#example-7552cff1②"></a> 
-<pre>Your verification code is: 123ABC78
-
-@example.com #123ABC78
-</pre>
-   </div>
+   <p>For example, <a data-link-type="dfn">origin-bound one-time code messages</a> explicitly
+identify the origin on which the OTP can be used.</p>
    <p>The addressing scheme must be enforced by the agent to guarantee that
 it gets routed appropriately.</p>
    <h3 class="heading settled" data-level="4.3" id="security-tampering"><span class="secno">4.3. </span><span class="content">Tampering</span><a class="self-link" href="#security-tampering"></a></h3>
    <p>There isn’t any built-in cryptographic guarantee that the OTP that is
 being handed back by this API hasn’t been tampered with. For example,
-an attacker could send an SMS to the user’s phone with an arbitrary
-origin which the agent happily passes back to the requesting call.</p>
+an attacker could send an <a data-link-type="dfn">origin-bound one-time code message</a> to the
+user’s phone with an arbitrary origin which the agent happilly passes
+back to the requesting call.</p>
    <div class="example" id="example-2de70cc1">
     <a class="self-link" href="#example-2de70cc1"></a> 
 <pre>Your verification code is: MUAHAHAHA
@@ -1924,8 +1897,7 @@ numbers.</p>
 websites trying to find a <strong>very</strong> specific user accross all of its user
 base. In this attack, if left unattended, a website can use this API to
 try to find a <strong>specific</strong> user that owns a <strong>specific</strong> phone number by
-sending all / some (depending on the confidence level) of its users an
-SMS and detecting when one is received.</p>
+sending all / some (depending on the confidence level) of its users an <a data-link-type="dfn">origin-bound one-time code message</a> and detecting when one is received.</p>
    <p>Notably, this API doesn’t help with the <strong>acquisition</strong> of the personal
 information, but rather with its <strong>verification</strong>. That is, this API helps <strong>verifying</strong> whether the user owns a specific phone number, but doesn’t
 help acquiring the phone number in the first place (it assumes that the
@@ -2189,10 +2161,22 @@ authoring advice.</p>
     <li><a href="#ref-for-abortsignal-aborted-flag">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-documentfragment-host">
+   <a href="https://dom.spec.whatwg.org/#concept-documentfragment-host">https://dom.spec.whatwg.org/#concept-documentfragment-host</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-documentfragment-host">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a> <a href="#ref-for-concept-documentfragment-host①">(2)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-credentials">
    <a href="https://fetch.spec.whatwg.org/#credentials">https://fetch.spec.whatwg.org/#credentials</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-credentials">2. Client Side API</a> <a href="#ref-for-credentials①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-origin-domain">
+   <a href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-domain">https://html.spec.whatwg.org/multipage/origin.html#concept-origin-domain</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-origin-domain">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a> <a href="#ref-for-concept-origin-domain①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-origin-effective-domain">
@@ -2225,22 +2209,10 @@ authoring advice.</p>
     <li><a href="#ref-for-relevant-settings-object">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-domain">
-   <a href="https://url.spec.whatwg.org/#concept-domain">https://url.spec.whatwg.org/#concept-domain</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-domain">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a> <a href="#ref-for-concept-domain①">(2)</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-empty-host">
    <a href="https://url.spec.whatwg.org/#empty-host">https://url.spec.whatwg.org/#empty-host</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-empty-host">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-host">
-   <a href="https://url.spec.whatwg.org/#concept-host">https://url.spec.whatwg.org/#concept-host</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-host">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a> <a href="#ref-for-concept-host①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-ipv4">
@@ -2315,12 +2287,6 @@ authoring advice.</p>
     <li><a href="#ref-for-dfn-interface-object">2.1. The OTPCredential Interface</a> <a href="#ref-for-dfn-interface-object①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-present">
-   <a href="https://heycam.github.io/webidl/#dfn-present">https://heycam.github.io/webidl/#dfn-present</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dfn-present">2.1.1. The [[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors) Method</a> <a href="#ref-for-dfn-present①">(2)</a>
-   </ul>
-  </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
@@ -2342,6 +2308,7 @@ authoring advice.</p>
     <a data-link-type="biblio">[DOM]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-abortsignal-aborted-flag" style="color:initial">aborted flag</span>
+     <li><span class="dfn-paneled" id="term-for-concept-documentfragment-host" style="color:initial">host</span>
     </ul>
    <li>
     <a data-link-type="biblio">[FETCH]</a> defines the following terms:
@@ -2351,6 +2318,7 @@ authoring advice.</p>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-concept-origin-domain" style="color:initial">domain</span>
      <li><span class="dfn-paneled" id="term-for-concept-origin-effective-domain" style="color:initial">effective domain</span>
      <li><span class="dfn-paneled" id="term-for-environment-settings-object" style="color:initial">environment settings object</span>
      <li><span class="dfn-paneled" id="term-for-concept-origin-opaque" style="color:initial">opaque origin</span>
@@ -2360,9 +2328,7 @@ authoring advice.</p>
    <li>
     <a data-link-type="biblio">[URL]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-concept-domain" style="color:initial">domain</span>
      <li><span class="dfn-paneled" id="term-for-empty-host" style="color:initial">empty host</span>
-     <li><span class="dfn-paneled" id="term-for-concept-host" style="color:initial">host</span>
      <li><span class="dfn-paneled" id="term-for-concept-ipv4" style="color:initial">ipv4 address</span>
      <li><span class="dfn-paneled" id="term-for-concept-ipv6" style="color:initial">ipv6 address</span>
      <li><span class="dfn-paneled" id="term-for-opaque-host" style="color:initial">opaque host</span>
@@ -2379,7 +2345,6 @@ authoring advice.</p>
      <li><span class="dfn-paneled" id="term-for-SecureContext" style="color:initial">SecureContext</span>
      <li><span class="dfn-paneled" id="term-for-securityerror" style="color:initial">SecurityError</span>
      <li><span class="dfn-paneled" id="term-for-dfn-interface-object" style="color:initial">interface object</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-present" style="color:initial">present</span>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -2400,25 +2365,27 @@ authoring advice.</p>
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
+   <dt id="biblio-sms-one-time-codes">[SMS-ONE-TIME-CODES]
+   <dd><a href="https://wicg.github.io/sms-one-time-codes/">Origin-bound one-time codes delivered via SMS</a>. cg-draft. URL: <a href="https://wicg.github.io/sms-one-time-codes/">https://wicg.github.io/sms-one-time-codes/</a>
    <dt id="biblio-url">[URL]
    <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/">URL Standard</a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
   </dl>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
-<pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext①"><c- g>SecureContext</c-></a>]
-<c- b>interface</c-> <a href="#otpcredential"><code><c- g>OTPCredential</c-></code></a> : <a class="n" data-link-type="idl-name" href="https://w3c.github.io/webappsec-credential-management/#credential" id="ref-for-credential④①"><c- n>Credential</c-></a> {
-    <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString" id="ref-for-idl-DOMString②"><c- b>DOMString</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="DOMString" href="#dom-otpcredential-code" id="ref-for-dom-otpcredential-code②"><c- g>code</c-></a>;
+<pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed"><c- g>Exposed</c-></a>=<c- n>Window</c->, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext"><c- g>SecureContext</c-></a>]
+<c- b>interface</c-> <a href="#otpcredential"><code><c- g>OTPCredential</c-></code></a> : <a class="n" data-link-type="idl-name" href="https://w3c.github.io/webappsec-credential-management/#credential"><c- n>Credential</c-></a> {
+    <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-DOMString"><c- b>DOMString</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="DOMString" href="#dom-otpcredential-code"><c- g>code</c-></a>;
 };
 
-<c- b>partial</c-> <c- b>dictionary</c-> <a class="idl-code" data-link-type="dictionary" href="https://w3c.github.io/webappsec-credential-management/#dictdef-credentialrequestoptions" id="ref-for-dictdef-credentialrequestoptions②①"><c- g>CredentialRequestOptions</c-></a> {
-    <a class="n" data-link-type="idl-name" href="#dictdef-otpcredentialrequestoptions" id="ref-for-dictdef-otpcredentialrequestoptions①①"><c- n>OTPCredentialRequestOptions</c-></a> <a class="idl-code" data-link-type="dict-member" data-type="OTPCredentialRequestOptions " href="#dom-credentialrequestoptions-otp" id="ref-for-dom-credentialrequestoptions-otp④①"><c- g>otp</c-></a>;
+<c- b>partial</c-> <c- b>dictionary</c-> <a class="idl-code" data-link-type="dictionary" href="https://w3c.github.io/webappsec-credential-management/#dictdef-credentialrequestoptions"><c- g>CredentialRequestOptions</c-></a> {
+    <a class="n" data-link-type="idl-name" href="#dictdef-otpcredentialrequestoptions"><c- n>OTPCredentialRequestOptions</c-></a> <a class="idl-code" data-link-type="dict-member" data-type="OTPCredentialRequestOptions " href="#dom-credentialrequestoptions-otp"><c- g>otp</c-></a>;
 };
 
 <c- b>dictionary</c-> <a href="#dictdef-otpcredentialrequestoptions"><code><c- g>OTPCredentialRequestOptions</c-></code></a> {
-  <c- b>sequence</c->&lt;<a class="n" data-link-type="idl-name" href="#enumdef-otpcredentialtransporttype" id="ref-for-enumdef-otpcredentialtransporttype③"><c- n>OTPCredentialTransportType</c-></a>> <a class="idl-code" data-default="[]" data-link-type="dict-member" data-type="sequence<OTPCredentialTransportType> " href="#dom-otpcredentialrequestoptions-transport" id="ref-for-dom-otpcredentialrequestoptions-transport①"><c- g>transport</c-></a> = [];
+  <c- b>sequence</c->&lt;<a class="n" data-link-type="idl-name" href="#enumdef-otpcredentialtransporttype"><c- n>OTPCredentialTransportType</c-></a>> <a class="idl-code" data-default="[]" data-link-type="dict-member" data-type="sequence<OTPCredentialTransportType> " href="#dom-otpcredentialrequestoptions-transport"><c- g>transport</c-></a> = [];
 };
 
 <c- b>enum</c-> <a href="#enumdef-otpcredentialtransporttype"><code><c- g>OTPCredentialTransportType</c-></code></a> {
-    <a class="idl-code" data-link-type="enum-value" href="#dom-otpcredentialtransporttype-sms" id="ref-for-dom-otpcredentialtransporttype-sms①"><c- s>"sms"</c-></a>,
+    <a class="idl-code" data-link-type="enum-value" href="#dom-otpcredentialtransporttype-sms"><c- s>"sms"</c-></a>,
 };
 
 </pre>
