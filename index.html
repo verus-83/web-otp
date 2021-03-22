@@ -4,10 +4,10 @@
   <title>Web OTP API</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version c0901885, updated Thu Jan 21 13:29:42 2021 -0800" name="generator">
+  <meta content="Bikeshed version 4d0641293, updated Tue Mar 16 15:42:04 2021 -0700" name="generator">
   <link href="http://wicg.github.io/WebOTP" rel="canonical">
   <link href="logo-otp.png" rel="icon">
-  <meta content="da0debcb8d072a96aaa481be29182c665f446567" name="document-revision">
+  <meta content="7b0d56228a1875c9a37d1423d63fed0b9c1bd03c" name="document-revision">
 <style>
 dl.domintro dt {
     font-family: Menlo, Consolas, "DejaVu Sans Mono", Monaco, monospace;
@@ -582,7 +582,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Web OTP API</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2021-01-25">25 January 2021</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2021-03-22">22 March 2021</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -929,7 +929,7 @@ Its <a data-link-type="dfn" href="https://w3c.github.io/webappsec-permissions-po
    <p>A <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-permissions-policy" id="ref-for-concept-document-permissions-policy①">permissions policy</a> determines whether any content in that <a href="https://html.spec.whatwg.org/multipage/dom.html#documents">document</a> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#allowed-to-use" id="ref-for-allowed-to-use">allowed to successfully invoke</a> the <a data-link-type="dfn">Web OTP API</a>, i.e., via <code><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-get" id="ref-for-dom-credentialscontainer-get⑦">navigator.credentials.get({otp: { transport: ["sms"]}})</a></code>.
 If disabled in any document, no content in the document will be <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#allowed-to-use" id="ref-for-allowed-to-use①">allowed to use</a> the foregoing methods: attempting to do so will <a href="https://www.w3.org/2001/tag/doc/promises-guide#errors">return an error</a>.</p>
    <h3 class="heading settled" data-level="2.6" id="sctn-iframe-guidance"><span class="secno">2.6. </span><span class="content">Using Web OTP within <code>iframe</code> elements</span><a class="self-link" href="#sctn-iframe-guidance"></a></h3>
-   <p>The <a data-link-type="dfn">Web OTP API</a> is available to inner frames when the origin matches but it’s disabled by default in cross-origin <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element" id="ref-for-the-iframe-element">iframe</a></code>s.
+   <p>The <a data-link-type="dfn">Web OTP API</a> is available in inner frames when the origins match but it’s disabled by default in cross-origin <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element" id="ref-for-the-iframe-element">iframe</a></code>s.
 To override this default policy and indicate that a cross-origin <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element" id="ref-for-the-iframe-element①">iframe</a></code> is allowed to invoke the <a data-link-type="dfn">Web OTP API</a>'s <code class="idl"><a data-link-type="idl" href="#dom-otpcredential-discoverfromexternalsource-slot" id="ref-for-dom-otpcredential-discoverfromexternalsource-slot③">[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)</a></code> method, specify the <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-allow" id="ref-for-attr-iframe-allow">allow</a></code> attribute on the <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element" id="ref-for-the-iframe-element②">iframe</a></code> element and include the <code><a data-link-type="dfn" href="#otp-credentials-feature" id="ref-for-otp-credentials-feature">otp-credentialst</a></code> feature-identifier token in the <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-allow" id="ref-for-attr-iframe-allow①">allow</a></code> attribute’s value.</p>
    <p><a data-link-type="dfn">Relying Parties</a> utilizing the Web OTP API in an embedded context should review <a href="#sctn-seccons-visibility">§ 4.4 Visibility Considerations for Embedded Usage</a> regarding <a data-link-type="dfn" href="#ui-redressing" id="ref-for-ui-redressing">UI redressing</a> and its possible mitigations.</p>
    <h2 class="heading settled" data-level="3" id="transports"><span class="secno">3. </span><span class="content">Transports</span><a class="self-link" href="#transports"></a></h2>
