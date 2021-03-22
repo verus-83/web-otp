@@ -1,6 +1,7 @@
 
 # Web OTP
 
+> **WARNING**: The UI and mechanism are outdated and we are updating the content. See https://web.dev/web-otp/ for how the API looks today.
 ## TL;DR;
 
 Many web sites rely on verifying phone numbers via sending one-time-passwords (OTP) via SMS, which instructs users to copy/paste it into the website.
