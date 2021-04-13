@@ -1,5 +1,5 @@
 
-# Web OTP
+# WebOTP
 
 > **WARNING**: The UI and mechanism are outdated and we are updating the content. See https://web.dev/web-otp/ for how the API looks today.
 ## TL;DR;

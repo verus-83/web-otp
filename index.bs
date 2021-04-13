@@ -1,5 +1,5 @@
 <pre class='metadata'>
-Title: Web OTP API
+Title: WebOTP API
 Shortname: webotp
 Level: 1
 Status: CG-DRAFT
@@ -399,19 +399,19 @@ the feature-identifier token "<code><dfn data-lt="otp-credentials-feature" expor
 Its [=default allowlist=] is '<code>self</code>'. [[!Permissions-Policy]]
 
 A {{Document}}'s [=Document/permissions policy=] determines whether any content in that <a href="https://html.spec.whatwg.org/multipage/dom.html#documents">document</a> is
-[=allowed to use|allowed to successfully invoke=] the [=Web OTP API=], i.e., via
+[=allowed to use|allowed to successfully invoke=] the [=WebOTP API=], i.e., via
 <code><a idl for="CredentialsContainer" lt="get()">navigator.credentials.get({otp: { transport: ["sms"]}})</a></code>.
 If disabled in any document, no content in the document will be [=allowed to use=]
 the foregoing methods: attempting to do so will [return an error](https://www.w3.org/2001/tag/doc/promises-guide#errors).
 
 <!-- ============================================================ -->
-## Using Web OTP within <code>iframe</code> elements ## {#sctn-iframe-guidance}
+## Using WebOTP within <code>iframe</code> elements ## {#sctn-iframe-guidance}
 <!-- ============================================================ -->
 
-The [=Web OTP API=] is available in inner frames when the origins match but it's disabled by default in cross-origin <{iframe}>s.
-To override this default policy and indicate that a cross-origin <{iframe}> is allowed to invoke the [=Web OTP API=]'s {{[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)}} method, specify the <{iframe/allow}> attribute on the <{iframe}> element and include the <code>[=otp-credentials-feature|otp-credentialst=]</code> feature-identifier token in the <{iframe/allow}> attribute's value.
+The [=WebOTP API=] is available in inner frames when the origins match but it's disabled by default in cross-origin <{iframe}>s.
+To override this default policy and indicate that a cross-origin <{iframe}> is allowed to invoke the [=WebOTP API=]'s {{[[DiscoverFromExternalSource]](origin, options, sameOriginWithAncestors)}} method, specify the <{iframe/allow}> attribute on the <{iframe}> element and include the <code>[=otp-credentials-feature|otp-credentialst=]</code> feature-identifier token in the <{iframe/allow}> attribute's value.
 
-[=[RPS]=] utilizing the Web OTP API in an embedded context should review [[#sctn-seccons-visibility]] regarding [=UI redressing=] and its possible mitigations.
+[=[RPS]=] utilizing the WebOTP API in an embedded context should review [[#sctn-seccons-visibility]] regarding [=UI redressing=] and its possible mitigations.
 
 <!-- ============================================================ -->
 # Transports # {#transports}
@@ -506,7 +506,7 @@ It is the responsibility for the caller to:
 ## Visibility Considerations for Embedded Usage ## {#sctn-seccons-visibility}
 <!-- ============================================================ -->
 
-Simplistic use of Web OTP in an embedded context, e.g., within <{iframe}>s as described in [[#sctn-iframe-guidance]], may make users vulnerable to <dfn>UI Redressing</dfn> attacks, also known as "[Clickjacking](https://en.wikipedia.org/wiki/Clickjacking)". This is where an attacker overlays their own UI on top of a [=[RP]=]'s intended UI and attempts to trick the user into performing unintended actions with the [=[RP]=]. For example, using these techniques, an attacker might be able to trick users into purchasing items, transferring money, etc.
+Simplistic use of WebOTP in an embedded context, e.g., within <{iframe}>s as described in [[#sctn-iframe-guidance]], may make users vulnerable to <dfn>UI Redressing</dfn> attacks, also known as "[Clickjacking](https://en.wikipedia.org/wiki/Clickjacking)". This is where an attacker overlays their own UI on top of a [=[RP]=]'s intended UI and attempts to trick the user into performing unintended actions with the [=[RP]=]. For example, using these techniques, an attacker might be able to trick users into purchasing items, transferring money, etc.
 
 <!-- ============================================================ -->
 # Privacy # {#privacy}
